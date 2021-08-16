@@ -1,0 +1,157 @@
+---
+- name: Create IBM Cloud VPC VSI
+  hosts: localhost
+  collections:
+   - ibm.cloudcollection
+  environment:
+    IC_REGION: "{{ region }}"
+  tasks:
+    - name: Create VPC
+      when: vpc is undefined
+      ibm_is_vpc:
+        name: "{{ name_prefix }}-vpc"
+        state: available
+        id: "{{ vpc.id | default(omit) }}"
+      register: vpc_create_output
+
+    - name: Configure Security Group Rule to open SSH and web server on the VSI
+      when: vpc is undefined
+      ibm_is_security_group_rule:
+        state: available
+        group: "{{ vpc_create_output.resource.default_security_group }}"
+        direction: inbound
+        remote: 0.0.0.0/0
+        # tcp:
+        #   - port_max: 22
+        #     port_min: 22
+        #   - port_max: 80
+        #     port_min: 80
+        #   - port_max: 443
+        #     port_min: 443
+
+    - name: Save VPC as fact
+      when: vpc is undefined
+      set_fact:
+        cacheable: True
+        vpc: "{{ vpc_create_output.resource }}"
+
+    - name: Create VPC Subnet
+      when: subnet is undefined
+      ibm_is_subnet:
+        name: "{{ name_prefix }}-subnet"
+        state: available
+        id: "{{ subnet.id | default(omit) }}"
+        vpc: "{{ vpc.id }}"
+        total_ipv4_address_count: "{{ total_ipv4_address_count }}"
+        zone: "{{ zone }}"
+      register: subnet_create_output
+
+    - name: Save VPC Subnet as fact
+      when: subnet is undefined
+      set_fact:
+        cacheable: True
+        subnet: "{{ subnet_create_output.resource }}"
+
+    - name: Upload SSH Key
+      when: ssh_key is undefined
+      ibm_is_ssh_key:
+        name: "{{ ssh_key_name }}"
+        public_key: "{{ ssh_public_key }}"
+        id: "{{ ssh_key.id | default(omit) }}"
+      register: ssh_key_create_output
+
+    - name: Save SSH Key as fact
+      when: ssh_key is undefined
+      set_fact:
+        cacheable: True
+        ssh_key: "{{ ssh_key_create_output.resource }}"
+
+    - name: Retrieve image list
+      when: image_dict is undefined
+      ibm_is_images_info:
+      register: images_list
+
+    - name: Set VM image name/id dictionary fact
+      when: image_dict is undefined
+      set_fact:
+        cacheable: True
+        image_dict: "{{ images_list.resource.images |
+                        items2dict(key_name='name', value_name='id') }}"
+
+    - name: Create VSI
+      when: (vsi is undefined) or (cache_vsi is false)
+      ibm_is_instance:
+        name: "{{ name_prefix }}-vsi"
+        state: available
+        id: "{{ vsi.id | default(omit) }}"
+        vpc: "{{ vpc.id }}"
+        profile: "{{ vsi_profile }}"
+        image: "{{ image_dict[vsi_image] }}"
+        keys:
+          - "{{ ssh_key.id }}"
+        primary_network_interface:
+          - subnet: "{{ subnet.id }}"
+        zone: "{{ zone }}"
+      register: vsi_create_output
+
+    - name: Save VSI as fact
+      when: (vsi is undefined) or (cache_vsi is false)
+      set_fact:
+        cacheable: True
+        vsi: "{{ vsi_create_output.resource }}"
+
+    - name: Configure Floating IP Address
+      when: (fip is undefined) or (cache_vsi is false)
+      ibm_is_floating_ip:
+        name: "{{ name_prefix }}-fip"
+        state: available
+        id: "{{ fip.id | default(omit) }}"
+        target: "{{ vsi.primary_network_interface[0]['id'] }}"
+      register: fip_create_output
+
+    - name: Save Floating IP as fact
+      when: (fip is undefined) or (cache_vsi is false)
+      set_fact:
+        cacheable: True
+        fip: "{{ fip_create_output.resource }}"
+
+    - name: Print Floating IP Address
+      debug:
+        msg: "IP Address: {{ fip.address }}"
+
+    - name: Add VSI to Ansible inventory
+      add_host:
+        name: "{{ fip.address }}"
+        ansible_user: root
+        groups: new_vsi
+        ansible_ssh_extra_args: -o StrictHostKeyChecking=no
+
+- name: Check Ansible connection to new VSI
+  hosts: new_vsi
+  gather_facts: False
+  tasks:
+    - name: Wait for VSI to become reachable over SSH
+      wait_for_connection:
+
+- name: Deploy application
+  hosts: new_vsi
+  tasks:
+    - name: Collect OS information
+      command: cat /proc/sysinfo
+      register: sysinfo
+
+    - name: Print OS information
+      debug:
+        var: sysinfo.stdout_lines
+
+    - name: Install web server  (state=present is optional)
+      apt:
+        name: nginx
+        state: present
+        update_cache: yes
+        
+    - name: Upload webpage
+      ansible.builtin.copy:
+        src: index.html
+        dest: /var/www/html/index.html
+        mode: '0644'

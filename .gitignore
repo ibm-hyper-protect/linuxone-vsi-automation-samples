@@ -1,0 +1,4 @@
+**/.cache
+**/.terraform
+**/.terraform.lock.hcl
+**/my-settings.auto.tfvars

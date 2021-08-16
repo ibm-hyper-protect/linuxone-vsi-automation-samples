@@ -1,0 +1,13 @@
+
+---
+name_prefix: zlinux-ansible
+vsi_image: ubuntu-18-04
+vsi_profile: bz2-2x8
+ssh_key_name: 'angel-rsa'
+ssh_public_key: "{{lookup('file', '~/.ssh/id_rsa.pub') }}"
+total_ipv4_address_count: 256
+region: "jp-tok"
+zone: "{{region}}-3"
+# If cache_vsi=True then VSI creation will only be attemped if not cached
+#cache_vsi: True
+cache_vsi: False
