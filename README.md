@@ -11,7 +11,7 @@ IBM Cloud ansible is implemented as Terraform wrapper so they both basically
 allow you to create any IaaS/PaaS/SaaS in the IBM Cloud.
 
 Ansible will also allow you to do more actions such as installing SW on created
-zVSIs. Also Ansible will, in general, tolerate that you have created parts of the
+LinuxONE VSI. Also Ansible will, in general, tolerate that you have created parts of the
 infrastructure manually without having to import it as in Terraform´s case.
 
 Therefore, in general I preffer Ansible over Terraform BUT if you are only creating
