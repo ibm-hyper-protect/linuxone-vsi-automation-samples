@@ -38,7 +38,7 @@
     - name: Create VPC Subnet
       when: subnet is undefined
       ibm_is_subnet:
-        name: "{{ name_prefix }}-subnet"
+        name: "{{ name_prefix }}-{{ zone }}"
         state: available
         id: "{{ subnet.id | default(omit) }}"
         vpc: "{{ vpc.id }}"
@@ -86,7 +86,7 @@
         id: "{{ vsi.id | default(omit) }}"
         vpc: "{{ vpc.id }}"
         profile: "{{ vsi_profile }}"
-        image: "{{ image_dict[vsi_image] }}"
+        image: "{{ (image_dict|dict2items|selectattr('key', 'match', vsi_image)|list|first).value }}"
         keys:
           - "{{ ssh_key.id }}"
         primary_network_interface:
