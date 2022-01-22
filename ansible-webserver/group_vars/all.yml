@@ -13,7 +13,7 @@ vsi_profile: bz2-2x8
 # Name of the uploaded key
 # Please notice that the same key might not be uploaded twice
 # under different names
-ssh_key_name: 'angel-rsa'
+ssh_key_name: "{{ ansible_user_id | lower }}"
 ssh_public_key: "{{lookup('file', '~/.ssh/id_rsa.pub') }}"
 
 # Size of the created subnetwork
