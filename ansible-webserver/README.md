@@ -11,7 +11,8 @@
 5. Ensure you have an `IC_API_KEY` environment variable set up with your
    IBM Cloud API key
     - this will likelly require a paying account
-
+    - If you have downloaded your `apikey.json` file from the IBM Cloud UI you may use this command:
+      `export IC_API_KEY=$(cat ~/apikey.json | jq -r .apikey)`
 
 ## Create
 
