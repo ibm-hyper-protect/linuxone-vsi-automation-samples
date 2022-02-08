@@ -18,8 +18,8 @@
         state: absent
         id: "{{ vsi.id }}"
         vpc: "{{ vpc.id }}"
-        profile: "{{ vsi_profile }}"
-        image: "{{ (image_dict|dict2items|selectattr('key', 'match', vsi_image)|list|first).value }}"
+        profile: "{{ instance.profile }}"
+        image: "{{ (image_dict|dict2items|selectattr('key', 'match', instance.image)|list|first).value }}"
         keys:
           - "{{ ssh_key.id }}"
         primary_network_interface:
