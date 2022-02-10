@@ -3,17 +3,19 @@
 # Name prefix for the created objects (VPC, subnetwork, VSI)
 name_prefix: zlinux-ansible
 
-# Regular expresion for the VSI image name
-# If multiple matches are found the first one is taken
-vsi_image: ".*ubuntu-18-04.*s390x.*"
-
-# Profile name for the VSI
-vsi_profile: bz2-2x8
+# - VSI name for the instance
+# - Profile name for the VSI
+# - Regular expression for the VSI image name
+#    Note: If multiple matches are found the first one is taken
+instance:
+  name: "{{name_prefix}}-vsi"
+  profile: "bz2-2x8"
+  image: ".*ubuntu-18-04.*s390x.*"
 
 # Name of the uploaded key
 # Please notice that the same key might not be uploaded twice
 # under different names
-ssh_key_name: 'angel-rsa'
+ssh_key_name: "{{ ansible_user_id | lower }}"
 ssh_public_key: "{{lookup('file', '~/.ssh/id_rsa.pub') }}"
 
 # Size of the created subnetwork
@@ -26,6 +28,6 @@ region: "jp-tok"
 #Zone within the region
 zone: "{{region}}-1"
 
-# If cache_vsi=True then VSI creation will only be attemped if not cached
+# If cache_vsi=True then VSI creation will only be attempted if not cached
 #cache_vsi: True
 cache_vsi: False
