@@ -122,9 +122,10 @@
     - name: Add VSI to Ansible inventory
       add_host:
         name: "{{ fip.address }}"
-        ansible_user: root
+        ansible_user: "{{instance.username | default('root')}}"
         groups: new_vsi
-        ansible_ssh_extra_args: -o StrictHostKeyChecking=no
+        ansible_ssh_extra_args: "-o StrictHostKeyChecking=no"
+        ansible_python_interpreter: "{{instance.python_interpreter | default(omit)}}"
 
 - name: Check Ansible connection to new VSI
   hosts: new_vsi
