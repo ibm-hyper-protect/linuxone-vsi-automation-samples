@@ -1,4 +1,11 @@
 ---
+- name: conditional flush cache
+  hosts: localhost
+  gather_facts: False
+  tasks:
+    - name: Clear cache if we have changed the target zone
+      when: (cache_zone is undefined) or (zone != cache_zone)
+      meta: clear_facts
 - name: Destroy IBM Cloud VPC VSI
   hosts: localhost
   collections:
@@ -6,12 +13,17 @@
   environment:
     IC_REGION: "{{ region }}"
   tasks:
-
     - name: Release Floating IP
       ibm_is_floating_ip:
         state: absent
         id: "{{ fip.id }}"
+      when: (fip is defined) and (fip != None)
+
+    - name: Remove Floating IP fact
       when: fip is defined
+      set_fact:
+        cacheable: True
+        fip: null
 
     - name: Remove VSI
       ibm_is_instance:
@@ -25,7 +37,13 @@
         primary_network_interface:
           - subnet: "{{ subnet.id }}"
         zone: "{{ zone }}"
+      when: (vsi is defined) and (vsi != None)
+
+    - name: Remove VSI fact
       when: vsi is defined
+      set_fact:
+        cacheable: True
+        vsi: null
 
     # - name: Remove SSH Key
     #   ibm_is_ssh_key:

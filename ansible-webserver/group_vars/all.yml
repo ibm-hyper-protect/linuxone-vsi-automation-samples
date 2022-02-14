@@ -1,16 +1,28 @@
 
 ---
+os_type: zlinux
+#os_type: zos
+
 # Name prefix for the created objects (VPC, subnetwork, VSI)
-name_prefix: zlinux-ansible
+name_prefix: "{{ os_type }}-ansible"
 
 # - VSI name for the instance
 # - Profile name for the VSI
 # - Regular expression for the VSI image name
 #    Note: If multiple matches are found the first one is taken
-instance:
-  name: "{{name_prefix}}-vsi"
-  profile: "bz2-2x8"
-  image: ".*ubuntu-18-04.*s390x.*"
+instance-zlinux:
+  name: zlinux-vsi
+  profile: bz2-2x8
+  image: .*ubuntu-18-04.*s390x.*
+instance-zos:
+  name: "zos-vsi"
+  profile: mz2o-2x16
+  image: .*zos.*stock.*
+  username: IBMUSER
+  python_interpreters:
+  - /usr/lpp/IBM/cyp/v3r9/pyz/bin/python3
+  - /usr/lpp/IBM/cyp/v3r8/pyz/bin/python3
+instance: "{{ lookup('vars','instance-' + os_type) }}"
 
 # Name of the uploaded key
 # Please notice that the same key might not be uploaded twice
@@ -24,6 +36,7 @@ total_ipv4_address_count: 256
 # Region to deploy to
 region: "jp-tok"
 #region: "eu-gb"
+#region: "br-sao"
 
 #Zone within the region
 zone: "{{region}}-1"

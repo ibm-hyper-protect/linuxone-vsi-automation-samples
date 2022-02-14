@@ -1,9 +1,12 @@
+variable "os_type" {
+  default = "zlinux"
+}
 variable "region" {
   default = "jp-tok"
 }
 
-variable "zone1" {
-  default = "jp-tok-1"
+variable "zone" {
+  default = "1"
 }
 
 variable "vpc" {
@@ -30,13 +33,13 @@ variable "vsi_name" {
   default = "terraform-test"
 }
 
-variable "image" {
-  # Ubuntu 18.04 s390x
-  default = "r022-b4aca32e-acd4-4f0e-99a8-d3cf7e9f4607"
+variable "image_name" {
+  # Regular expresions allowed
+  default = null # Default depends on os_type - see locals.tf
 }
 
 variable "profile" {
-  default = "bz2-2x8"
+  default = null # Default depends on os_type - see locals.tf
 }
 
 variable "security_group_name" {
