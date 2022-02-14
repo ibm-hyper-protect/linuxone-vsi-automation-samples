@@ -1,3 +1,4 @@
 ibmcloud_api_key = "Your IBM Cloud API key"
+# os_type="zos" # Set if you want to create a z/OS
 # ssh_public_key_name = "angel-rsa"
-# Any other settings you want to override
+# Any other variable you want to set (see variables.tf)

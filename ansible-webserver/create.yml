@@ -1,4 +1,11 @@
 ---
+- name: conditional flush cache
+  hosts: localhost
+  gather_facts: False
+  tasks:
+    - name: Clear cache if we have changed the target zone
+      when: (cache_zone is undefined) or (zone != cache_zone)
+      meta: clear_facts
 - name: Create IBM Cloud VPC VSI
   hosts: localhost
   collections:
@@ -6,6 +13,11 @@
   environment:
     IC_REGION: "{{ region }}"
   tasks:
+    - name: Save zone as fact
+      set_fact:
+        cacheable: True
+        cache_zone: "{{ zone }}"
+
     - name: Create VPC
       when: vpc is undefined
       ibm_is_vpc:
@@ -79,14 +91,14 @@
                         items2dict(key_name='name', value_name='id') }}"
 
     - name: Create VSI
-      when: (vsi is undefined) or (cache_vsi is false)
+      when: (vsi is undefined) or (vsi == None) or (cache_vsi is false)
       ibm_is_instance:
         name: "{{ instance.name }}"
         state: available
         id: "{{ vsi.id | default(omit) }}"
         vpc: "{{ vpc.id }}"
         profile: "{{ instance.profile }}"
-        image: "{{ (image_dict|dict2items|selectattr('key', 'match', instance.image)|list|first).value }}"
+        image: "{{ (image_dict|dict2items|selectattr('key', 'match', instance.image)|list|last).value }}"
         keys:
           - "{{ ssh_key.id }}"
         primary_network_interface:
@@ -95,13 +107,13 @@
       register: vsi_create_output
 
     - name: Save VSI as fact
-      when: (vsi is undefined) or (cache_vsi is false)
+      when: vsi_create_output.resource is defined
       set_fact:
         cacheable: True
         vsi: "{{ vsi_create_output.resource }}"
 
     - name: Configure Floating IP Address
-      when: (fip is undefined) or (cache_vsi is false)
+      when: (fip is undefined) or (fip == None) or (cache_vsi is false)
       ibm_is_floating_ip:
         name: "{{ name_prefix }}-fip"
         state: available
@@ -110,7 +122,7 @@
       register: fip_create_output
 
     - name: Save Floating IP as fact
-      when: (fip is undefined) or (cache_vsi is false)
+      when: fip_create_output.resource is defined
       set_fact:
         cacheable: True
         fip: "{{ fip_create_output.resource }}"
@@ -122,9 +134,10 @@
     - name: Add VSI to Ansible inventory
       add_host:
         name: "{{ fip.address }}"
-        ansible_user: root
+        ansible_user: "{{instance.username | default('root')}}"
         groups: new_vsi
-        ansible_ssh_extra_args: -o StrictHostKeyChecking=no
+        ansible_ssh_extra_args: "-o StrictHostKeyChecking=no"
+        ansible_interpreter_python_fallback: "{{instance.python_interpreters | default(omit)}}"
 
 - name: Check Ansible connection to new VSI
   hosts: new_vsi
@@ -137,20 +150,24 @@
   hosts: new_vsi
   tasks:
     - name: Collect OS information
+      when: os_type == "zlinux"
       command: cat /proc/sysinfo
       register: sysinfo
 
     - name: Print OS information
+      when: sysinfo is defined
       debug:
         var: sysinfo.stdout_lines
 
     - name: Install web server  (state=present is optional)
+      when: os_type == "zlinux"
       apt:
         name: nginx
         state: present
         update_cache: yes
         
     - name: Upload webpage
+      when: os_type == "zLinux"
       ansible.builtin.copy:
         src: index.html
         dest: /var/www/html/index.html
