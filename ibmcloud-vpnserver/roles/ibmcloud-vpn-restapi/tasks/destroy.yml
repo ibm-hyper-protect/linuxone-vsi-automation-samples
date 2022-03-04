@@ -1,0 +1,17 @@
+- when: (vpn_server is defined) and (vpn_server.keys() | length > 0) and (destroy_vpn is true)
+  block:    
+    - name: delete vpn gateway 
+      uri:
+        method: DELETE
+        url: "{{ ansible_env.IBMCLOUD_IS_NG_API_ENDPOINT | default('https://'+region+'.iaas.cloud.ibm.com') }}/v1/vpn_servers/{{vpn_server.id}}?version={{ibmcloud_api_version}}&generation=2&maturity=beta" 
+        headers: 
+          Authorization: "Bearer {{ IAM_TOKEN }} " 
+          Content-Type: "application/json" 
+          accept: "application/json" 
+        status_code:
+        - 200
+        - 202
+    - name: Clear vpn fact
+      set_fact:
+        cacheable: True
+        vpn_server: {}

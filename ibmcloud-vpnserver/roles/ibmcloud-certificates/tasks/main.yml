@@ -1,0 +1,5 @@
+- include: create.yml
+  when: mode == "create"
+  
+- include: destroy.yml
+  when: mode == "destroy" and destroy_certmgr is true

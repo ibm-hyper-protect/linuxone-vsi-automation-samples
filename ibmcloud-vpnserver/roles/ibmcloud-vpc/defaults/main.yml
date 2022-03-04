@@ -1,0 +1,21 @@
+# Name for the VPC
+vpc_name: zlinux-ansible
+
+# Name for the components for the VPC created objects (VPC, subnetwork, VSI)
+zlinux-ansible:
+  subnets:
+  - name: "{{ vpc_name }}-subnet-1"
+    zone: "{{region}}-1"
+  security_group:
+    tcp:
+    - 443
+    - 80
+    - 22
+
+# If destroy_vpc is enabled then the destroy playbook will delete the subnets and the vpc
+destroy_vpc: False
+
+# Size of the created subnetwork
+total_ipv4_address_count: 256
+
+mode: "create"

@@ -1,0 +1,85 @@
+
+- when: (vpn_server is undefined) or (vpn_server.keys() | length < 1)
+  block:
+    - name: Retrieve list of certificates already deployed
+      ibm.cloudcollection.ibm_certificate_manager_certificates_info:
+        certificate_manager_instance_id: "{{cms.id}}"
+      register: cms_certificates_info
+
+    - name: Save certificate manager resource instance as fact
+      set_fact:
+        cacheable: True
+        cert_dict: "{{ cms_certificates_info.resource.certificates |
+                      items2dict(key_name='name', value_name='cert_id') }}"
+      when: cms_certificates_info.rc==0
+    - name: "Retrieve IBM Cloud vpc address prefixes"
+      ibm.cloudcollection.ibm_is_vpc_address_prefixes_info:
+        vpc: "{{vpc.id}}"
+      register: get_addresses_output
+    - debug:
+        var: get_addresses_output
+    - name: create vpn gateway
+      uri:
+        method: POST
+        url: "{{ ansible_env.IBMCLOUD_IS_NG_API_ENDPOINT | default('https://'+region+'.iaas.cloud.ibm.com') }}/v1/vpn_servers?version={{ibmcloud_api_version}}&generation=2&maturity=beta" 
+        headers: 
+          Authorization: "Bearer {{ IAM_TOKEN }} " 
+          Content-Type: "application/json" 
+          accept: "application/json" 
+        body_format: json
+        body:
+          certificate:
+            crn: "{{cert_dict[vpnserver.common_name]}}"
+          client_authentication:
+            -  method: "certificate"
+               client_ca:
+                 crn: "{{cert_dict[vpnclient.common_name]}}"
+          client_idle_timeout: 600
+          client_ip_pool: "{{ lookup('vars',vpc_name).vpn.client_ip_pool }}"
+          enable_split_tunneling: true
+          name: "{{ lookup('vars',vpc_name).vpn.name }}"
+          port: 443
+          protocol: "tcp"
+          resource_group:
+            id: "{{ vpc.resource_group}}"
+          subnets:
+            - id: "{{ subnet_dict[lookup('vars',vpc_name).vpn.zone] }}" 
+        status_code:
+          - 200
+          - 201
+      register: vpn_server_create_response
+    - name: Retrieve vpn gateway information
+      uri:
+        method: GET
+        url: "{{ ansible_env.IBMCLOUD_IS_NG_API_ENDPOINT | default('https://'+region+'.iaas.cloud.ibm.com') }}/v1/vpn_servers/{{vpn_server_create_response.json.id }}?version={{ibmcloud_api_version}}&generation=2&maturity=beta" 
+        headers: 
+          Authorization: "Bearer {{ IAM_TOKEN }} " 
+          Content-Type: "application/json" 
+          accept: "application/json" 
+      register: vpn_server_output
+    - name: Set address routes for the VPC into the VPN server
+      uri:
+        method: POST
+        url: "{{ ansible_env.IBMCLOUD_IS_NG_API_ENDPOINT | default('https://'+region+'.iaas.cloud.ibm.com') }}/v1/vpn_servers/{{vpn_server_create_response.json.id }}/routes?version={{ibmcloud_api_version}}&generation=2&maturity=beta" 
+        headers: 
+          Authorization: "Bearer {{ IAM_TOKEN }} " 
+          Content-Type: "application/json" 
+          accept: "application/json"  
+        body_format: json
+        body:
+          name: "{{item.name}}"
+          destination: "{{item.cidr}}"
+          action: "translate"
+        status_code:
+        - 200
+        - 201
+      loop: "{{get_addresses_output.resource.address_prefixes}}"
+    - name: Set vpn gateway information as fact
+      set_fact:
+        cacheable: True
+        vpn_server: "{{vpn_server_output.json}}"
+
+- name: "Create the {{ovpn_config_file}} OpenVPN profile"
+  template:
+    src: ovpn.j2
+    dest: "{{ovpn_config_file}}"

@@ -6,3 +6,6 @@
 terraform-single/terraform.tfstate
 terraform-single/terraform.tfstate.backup
 terraform-single/.terraform.tfstate.lock.info
+ibmcloud-vpnserver/*.pem
+ibmcloud-vpnserver/*.key
+ibmcloud-vpnserver/*.ovpn
