@@ -1,0 +1,64 @@
+# Region to deploy
+region: "jp-tok"
+# region: "br-sao"
+# region: "eu-gb"
+
+certificate_service_name: "CertificateManager-vpnserver"
+
+# The region in which to deploy the certificate manager. Note that the free plan service
+# is not available in all regions.
+certificate_service_region: "us-south"
+
+# The certificate authority you wish to use for your VPN server and client.
+ca:
+  x509_certificate_file: "{{region}}.ca.pem"
+  x509_key_file: "{{region}}.ca.key"
+  passphrase: "{{lookup('password', 'ibmcloud.ca.password chars=ascii_letters,hexdigits length=12')}}"
+  common_name: "VPN Server CA for {{region}}"
+
+# The server certificate you wish to use for your VPN server.
+vpnserver:
+  x509_certificate_file: "{{region}}.vpnserver.pem"
+  x509_key_file: "{{region}}.vpnserver.key"
+  common_name: "VPN Server for {{region}}"
+
+# The client certificate you wish to use for your VPN client.
+vpnclient:
+  x509_certificate_file: "{{region}}.vpnclient.pem"
+  x509_key_file: "{{region}}.vpnclient.key"
+  common_name: "VPN Client for {{region}}"
+
+
+# Name for the VPC
+vpc_name: vpn-ansible
+
+# components for the VPC created objects (VPC, subnetworks, security group, VPN server)
+vpn-ansible:
+  subnets:
+  - name: "{{ vpc_name }}-subnet-1"
+    zone: "{{region}}-1"
+  security_group:
+    tcp:
+    - 443
+    - 80
+    - 22
+  vpn:
+    name: "{{ vpc_name }}-vpnserver"
+    zone: "{{region}}-1"
+    client_ip_pool: "10.2.0.0/16"
+
+# Name for the resulting OpenVPN client configuration file.
+ovpn_config_file: "{{region}}.ovpn"
+
+# If destroy_vpn is enabled then the destroy playbook will delete the client-to-site VPN server (Beta)
+# destroy_vpn: True
+destroy_vpn: False
+
+# If destroy_vpc is enabled then the destroy playbook will delete the subnets and the vpc. 
+# Note that destroy_vpn must also be set to True for the VPC to be successfully deleted.
+# destroy_vpc: True
+destroy_vpc: False
+
+# If destroy_certmgr is enabled then the destroy playbook will delete the Certificate Manager resource
+# destroy_certmgr: True
+destroy_certmgr: False

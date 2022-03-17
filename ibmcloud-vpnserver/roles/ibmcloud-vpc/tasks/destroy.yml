@@ -1,0 +1,23 @@
+- name: Remove VPC Subnets
+  when: (subnet_dict is defined) and (subnet_dict.keys() | length > 0) and (destroy_vpc is true)
+  block:  
+    - ibm.cloudcollection.ibm_is_subnet:
+        state: absent
+        id: "{{ item.value }}"
+      loop: "{{ subnet_dict|dict2items }}"
+      
+    - set_fact:
+        cacheable: True
+        subnet_dict: {}
+
+- name: Remove VPC
+  when: (vpc is defined) and (vpc.keys() | length > 0) and (destroy_vpc is true)
+  block:
+    - ibm.cloudcollection.ibm_is_vpc:
+        state: absent
+        id: "{{ vpc.id }}"
+
+    - name: Clear VPC fact
+      set_fact:
+        cacheable: True
+        vpc: {}

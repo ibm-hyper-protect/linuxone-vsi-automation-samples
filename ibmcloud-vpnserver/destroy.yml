@@ -1,0 +1,12 @@
+---
+- name: Destroying a client-to-site VPN server (Beta) on IBM Cloud
+  hosts: localhost
+  connection: local
+  vars:
+    - mode: "destroy"
+  roles:
+    - ibmcloud-vpn-restapi
+    - ibmcloud-vpc
+    - ibmcloud-certificates
+  environment:
+    - IC_REGION: "{{ region }}"

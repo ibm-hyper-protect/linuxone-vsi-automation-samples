@@ -1,0 +1,10 @@
+---
+- name: Preparing a client-to-site VPN server (Beta) on IBM Cloud
+  hosts: localhost
+  connection: local
+  roles:
+    - ibmcloud-vpc
+    - ibmcloud-certificates
+    - ibmcloud-vpn-restapi
+  environment:
+    - IC_REGION: "{{ region }}"

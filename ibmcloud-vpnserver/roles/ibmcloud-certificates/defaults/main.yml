@@ -1,0 +1,19 @@
+certificate_service_name: "CertificateManager-vpnserver"
+certificate_service_region: "{{region}}"
+ca:
+  x509_certificate_file: "ibmcloud.ca.pem"
+  x509_key_file: "ibmcloud.ca.key"
+  passphrase: "{{lookup('password', 'ibmcloud.ca.password chars=ascii_letters,hexdigits length=12')}}"
+  common_name: "VPN Server CA"
+vpnserver:
+  x509_certificate_file: "ibmcloud.vpnserver.pem"
+  x509_key_file: "ibmcloud.vpnserver.key"
+  common_name: "VPN Server"
+vpnclient:
+  x509_certificate_file: "ibmcloud.vpnclient.pem"
+  x509_key_file: "ibmcloud.vpnclient.key"
+  common_name: "VPN Client"
+
+destroy_certmgr: false
+
+mode: "create"

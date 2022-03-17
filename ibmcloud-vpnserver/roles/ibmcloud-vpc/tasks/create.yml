@@ -1,0 +1,43 @@
+
+- when: (vpc is undefined) or (vpc.keys() | length < 1)
+  block:
+    - name: Create VPC
+      ibm.cloudcollection.ibm_is_vpc:
+        name: "{{ vpc_name }}"
+        state: available
+        id: "{{ vpc.id | default(omit) }}"
+      register: vpc_create_output
+
+    - name: Create security group rules
+      ibm.cloudcollection.ibm_is_security_group_rule:
+        state: available
+        group: "{{ vpc_create_output.resource.default_security_group }}"
+        direction: inbound
+        remote: 0.0.0.0/0
+        tcp:
+        - port_max: "{{ item }}"
+          port_min: "{{ item }}"
+      loop: "{{ lookup('vars',vpc_name).security_group.tcp }}"
+
+    - name: Save VPC as fact
+      set_fact:
+        cacheable: True
+        vpc: "{{ vpc_create_output.resource }}"
+
+- when: (subnet_dict is undefined) or (subnet_dict.keys() | length < 1)
+  name: Create VPC Subnets
+  ibm.cloudcollection.ibm_is_subnet:
+    name: "{{ item.name }}"
+    state: available
+    vpc: "{{ vpc.id }}"
+    total_ipv4_address_count: "{{ total_ipv4_address_count }}"
+    zone: "{{ item.zone }}"
+  register: subnet_create_output
+  loop: "{{ lookup('vars',vpc_name).subnets }}"
+
+- name: Save VPC subnets as fact
+  set_fact:
+    cacheable: True
+    subnet_dict: "{{ subnet_dict | default({}) | combine ({item.resource.zone: item.resource.id }) }}"
+  with_items: "{{ subnet_create_output.results }}"
+  when: subnet_create_output.changed is true

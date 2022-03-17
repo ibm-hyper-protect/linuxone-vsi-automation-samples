@@ -1,0 +1,17 @@
+
+- when: (cms is defined) and (cms.keys() | length > 0) and (destroy_certmgr is true)
+  block:
+    - name: destroy certificate manager resource instance
+      ibm.cloudcollection.ibm_resource_instance:
+        name: "{{ certificate_service_name }}"
+        location: "{{ certificate_service_region }}"
+        service: "cloudcerts"
+        plan: "free"
+        state: "absent"
+    - set_fact:
+        cacheable: True
+        cert_dict: {}
+    - name: Clear certificate manager fact
+      set_fact:
+        cacheable: True
+        cms: {}

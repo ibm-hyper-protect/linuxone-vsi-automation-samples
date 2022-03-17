@@ -1,0 +1,173 @@
+
+- when: (cms is undefined) or (cms.keys() | length < 1)
+  block:
+  - name: provision certificate manager resource instance
+    ibm.cloudcollection.ibm_resource_instance:
+      name: "{{ certificate_service_name }}"
+      location: "{{ certificate_service_region }}"
+      service: "cloudcerts"
+      plan: "free"
+    register: resource_instance_output
+
+  - name: Save certificate manager resource instance as fact
+    set_fact:
+      cacheable: True
+      cms: "{{ resource_instance_output.resource }}"
+    when: resource_instance_output.rc==0
+
+- name: Retrieve list of certificates already deployed
+  ibm.cloudcollection.ibm_certificate_manager_certificates_info:
+    certificate_manager_instance_id: "{{cms.id}}"
+    region: "{{ certificate_service_region }}"
+  register: cms_certificates_info
+
+- debug:
+    var: cms_certificates_info
+
+- name: Save certificate manager resource instance as fact
+  set_fact:
+    cacheable: True
+    cert_dict: "{{ cms_certificates_info.resource.certificates |
+                  items2dict(key_name='name', value_name='cert_id') }}"
+  when: cms_certificates_info.rc==0
+
+- debug:
+    var: cert_dict
+
+- when: ca.common_name not in cert_dict.keys()
+  block:
+  - name: test for private key file
+    stat:
+      path: "{{ ca.x509_key_file }}"
+    register: ca_x509_key_test
+  - name: Create private key with password protection
+    community.crypto.openssl_privatekey:
+      path: "{{ ca.x509_key_file }}"
+      passphrase: "{{ ca.passphrase }}"
+      cipher: auto
+    when: not ca_x509_key_test.stat.exists
+  - name: test for certificate file
+    stat:
+      path: "{{ ca.x509_certificate_file }}"
+    register: ca_x509_cert_test
+  - name: Create certificate signing request (CSR) for CA certificate
+    community.crypto.openssl_csr_pipe:
+      privatekey_path: "{{ ca.x509_key_file }}"
+      privatekey_passphrase: "{{ ca.passphrase }}"
+      common_name: "{{ ca.common_name }}"
+      use_common_name_for_san: false
+      basic_constraints:
+        - 'CA:TRUE'
+      basic_constraints_critical: yes
+      key_usage:
+        - keyCertSign
+      key_usage_critical: true
+    register: ca_csr
+    when: not ca_x509_cert_test.stat.exists
+
+  - name: Create self-signed CA certificate from CSR
+    community.crypto.x509_certificate:
+      path: "{{ ca.x509_certificate_file }}"
+      csr_content: "{{ ca_csr.csr }}"
+      privatekey_path: "{{ ca.x509_key_file }}"
+      privatekey_passphrase: "{{ ca.passphrase }}"
+      provider: selfsigned
+    register: ca_certificate_output
+    when: not ca_x509_cert_test.stat.exists
+
+  - name: import our CA to {{ certificate_service_name }}
+    ibm.cloudcollection.ibm_certificate_manager_import:
+      certificate_manager_instance_id: "{{ cms.id }}"
+      name: "{{ ca.common_name }}"
+      region: "{{ certificate_service_region }}"
+      data:
+        content: "{{ lookup('file','{{ ca.x509_certificate_file }}') }}"
+
+- when: vpnserver.common_name not in cert_dict.keys()
+  block:
+  - name: test for private key file
+    stat:
+      path: "{{ vpnserver.x509_key_file }}"
+    register: vpnserver_x509_key_test
+  - name: Create private key for new VPN Server certificate
+    community.crypto.openssl_privatekey:
+      path: "{{ vpnserver.x509_key_file }}"
+    when: not vpnserver_x509_key_test.stat.exists
+  - name: test for cert file
+    stat:
+      path: "{{vpnserver.x509_certificate_file}}"
+    register: vpnserver_cert_test
+  - name: Create certificate signing request (CSR) for new VPN server certificate
+    community.crypto.openssl_csr_pipe:
+      privatekey_path: "{{ vpnserver.x509_key_file }}"
+      common_name: "{{ vpnserver.common_name }}"
+      key_usage:
+        - digitalSignature
+        - Key Encipherment
+      extended_key_usage:
+        - TLS Web Server Authentication
+    register: csr
+    when: not vpnserver_cert_test.stat.exists
+  - name: Sign certificate with our CA
+    community.crypto.x509_certificate:
+      csr_content: "{{ csr.csr }}"
+      provider: ownca
+      path: "{{vpnserver.x509_certificate_file}}"
+      ownca_path: "{{ ca.x509_certificate_file }}"
+      ownca_privatekey_path: "{{ ca.x509_key_file }}"
+      ownca_privatekey_passphrase: "{{ ca.passphrase }}"
+      ownca_not_after: +365d  # valid for one year
+      ownca_not_before: "-1d"  # valid since yesterday
+    when: not vpnserver_cert_test.stat.exists
+  - name: import our VPN server certificate to {{ certificate_service_name }}
+    ibm.cloudcollection.ibm_certificate_manager_import:
+      certificate_manager_instance_id: "{{ cms.id }}"
+      name: "{{ vpnserver.common_name }}"
+      region: "{{ certificate_service_region }}"
+      data:
+        content: "{{ lookup('file','{{ vpnserver.x509_certificate_file }}') }}"
+        intermediate: "{{ lookup('file','{{ ca.x509_certificate_file }}') }}"
+        priv_key: "{{ lookup('file','{{ vpnserver.x509_key_file }}') }}"
+- when: vpnclient.common_name not in cert_dict.keys()
+  block:
+  - name: test for private key file
+    stat:
+      path: "{{ vpnclient.x509_key_file }}"
+    register: vpnclient_key_test
+  - name: Create private key for client certificate
+    community.crypto.openssl_privatekey:
+      path: "{{ vpnclient.x509_key_file }}"
+    when: not vpnclient_key_test.stat.exists
+  - name: test for cert file
+    stat:
+      path: "{{ vpnclient.x509_certificate_file }}"
+    register: vpnclient_cert_test
+  - name: Create certificate signing request (CSR) for new client certificate
+    community.crypto.openssl_csr_pipe:
+      privatekey_path: "{{ vpnclient.x509_key_file }}"
+      common_name: "{{vpnclient.common_name}}"
+      key_usage:
+        - digitalSignature
+      extended_key_usage:
+        - TLS Web Client Authentication
+    register: csr
+    when: not vpnclient_cert_test.stat.exists
+  - name: Sign client certificate with our CA
+    community.crypto.x509_certificate:
+      csr_content: "{{ csr.csr }}"
+      provider: ownca
+      path: "{{ vpnclient.x509_certificate_file}}"
+      ownca_path: "{{ ca.x509_certificate_file }}"
+      ownca_privatekey_path: "{{ ca.x509_key_file }}"
+      ownca_privatekey_passphrase: "{{ ca.passphrase }}"
+      ownca_not_after: +365d  # valid for one year
+      ownca_not_before: "-1d"  # valid since yesterday
+    when: not vpnclient_cert_test.stat.exists
+  - name: import our VPN client certificate to {{ certificate_service_name }}
+    ibm.cloudcollection.ibm_certificate_manager_import:
+      certificate_manager_instance_id: "{{ cms.id }}"
+      name: "{{ vpnclient.common_name }}"
+      region: "{{ certificate_service_region }}"
+      data:
+        content: "{{ lookup('file',vpnclient.x509_certificate_file) }}"
+        intermediate: "{{ lookup('file','{{ ca.x509_certificate_file }}') }}"
