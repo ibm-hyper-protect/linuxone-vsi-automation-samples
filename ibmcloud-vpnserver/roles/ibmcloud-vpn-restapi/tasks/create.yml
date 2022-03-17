@@ -4,6 +4,7 @@
     - name: Retrieve list of certificates already deployed
       ibm.cloudcollection.ibm_certificate_manager_certificates_info:
         certificate_manager_instance_id: "{{cms.id}}"
+        region: "{{ certificate_service_region }}"
       register: cms_certificates_info
 
     - name: Save certificate manager resource instance as fact

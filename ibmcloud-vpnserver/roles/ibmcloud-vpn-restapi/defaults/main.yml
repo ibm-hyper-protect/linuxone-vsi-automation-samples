@@ -1,4 +1,6 @@
-
+ibmcloud_iam_api_endpoint: "https://iam.cloud.ibm.com"
 ibmcloud_api_version: "2022-02-07"
 destroy_vpn: False
 ovpn_config_file: "ibmcloud.ovpn"
+
+certificate_service_region: "{{region}}"
