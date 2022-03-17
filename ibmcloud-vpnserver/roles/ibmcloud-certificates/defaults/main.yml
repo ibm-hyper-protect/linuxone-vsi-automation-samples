@@ -1,4 +1,5 @@
 certificate_service_name: "CertificateManager-vpnserver"
+certificate_service_region: "{{region}}"
 ca:
   x509_certificate_file: "ibmcloud.ca.pem"
   x509_key_file: "ibmcloud.ca.key"

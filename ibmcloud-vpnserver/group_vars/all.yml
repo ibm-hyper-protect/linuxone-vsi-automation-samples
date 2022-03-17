@@ -5,24 +5,28 @@ region: "jp-tok"
 
 certificate_service_name: "CertificateManager-vpnserver"
 
+# The region in which to deploy the certificate manager. Note that the free plan service
+# is not available in Sao Paulo.
+certificate_service_region: "{{region}}"
+
 # The certificate authority you wish to use for your VPN server and client.
 ca:
   x509_certificate_file: "ibmcloud.ca.pem"
   x509_key_file: "ibmcloud.ca.key"
   passphrase: "passw0rd"
-  common_name: "VPN Server CA"
+  common_name: "VPN Server CA for {{region}}"
 
 # The server certificate you wish to use for your VPN server.
 vpnserver:
   x509_certificate_file: "ibmcloud.vpnserver.pem"
   x509_key_file: "ibmcloud.vpnserver.key"
-  common_name: "VPN Server"
+  common_name: "VPN Server for {{region}}"
 
 # The client certificate you wish to use for your VPN client.
 vpnclient:
   x509_certificate_file: "ibmcloud.vpnclient.pem"
   x509_key_file: "ibmcloud.vpnclient.key"
-  common_name: "VPN Client"
+  common_name: "VPN Client for {{region}}"
 
 
 # Name for the VPC

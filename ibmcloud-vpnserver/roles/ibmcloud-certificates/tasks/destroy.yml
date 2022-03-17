@@ -4,7 +4,7 @@
     - name: destroy certificate manager resource instance
       ibm.cloudcollection.ibm_resource_instance:
         name: "{{ certificate_service_name }}"
-        location: "{{ region }}"
+        location: "{{ certificate_service_region }}"
         service: "cloudcerts"
         plan: "free"
         state: "absent"
