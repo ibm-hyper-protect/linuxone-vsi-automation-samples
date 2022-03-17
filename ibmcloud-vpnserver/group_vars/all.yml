@@ -7,25 +7,25 @@ certificate_service_name: "CertificateManager-vpnserver"
 
 # The region in which to deploy the certificate manager. Note that the free plan service
 # is not available in all regions.
-certificate_service_region: "{{region}}"
+certificate_service_region: "us-south"
 
 # The certificate authority you wish to use for your VPN server and client.
 ca:
-  x509_certificate_file: "ibmcloud.ca.pem"
-  x509_key_file: "ibmcloud.ca.key"
+  x509_certificate_file: "{{region}}.ca.pem"
+  x509_key_file: "{{region}}.ca.key"
   passphrase: "{{lookup('password', 'ibmcloud.ca.password chars=ascii_letters,hexdigits length=12')}}"
   common_name: "VPN Server CA for {{region}}"
 
 # The server certificate you wish to use for your VPN server.
 vpnserver:
-  x509_certificate_file: "ibmcloud.vpnserver.pem"
-  x509_key_file: "ibmcloud.vpnserver.key"
+  x509_certificate_file: "{{region}}.vpnserver.pem"
+  x509_key_file: "{{region}}.vpnserver.key"
   common_name: "VPN Server for {{region}}"
 
 # The client certificate you wish to use for your VPN client.
 vpnclient:
-  x509_certificate_file: "ibmcloud.vpnclient.pem"
-  x509_key_file: "ibmcloud.vpnclient.key"
+  x509_certificate_file: "{{region}}.vpnclient.pem"
+  x509_key_file: "{{region}}.vpnclient.key"
   common_name: "VPN Client for {{region}}"
 
 
@@ -48,7 +48,7 @@ vpn-ansible:
     client_ip_pool: "10.2.0.0/16"
 
 # Name for the resulting OpenVPN client configuration file.
-ovpn_config_file: "ibmcloud.ovpn"
+ovpn_config_file: "{{region}}.ovpn"
 
 # If destroy_vpn is enabled then the destroy playbook will delete the client-to-site VPN server (Beta)
 # destroy_vpn: True
