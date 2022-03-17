@@ -3,7 +3,7 @@ certificate_service_region: "{{region}}"
 ca:
   x509_certificate_file: "ibmcloud.ca.pem"
   x509_key_file: "ibmcloud.ca.key"
-  passphrase: "passw0rd"
+  passphrase: "{{lookup('password', 'ibmcloud.ca.password chars=ascii_letters,hexdigits length=12')}}"
   common_name: "VPN Server CA"
 vpnserver:
   x509_certificate_file: "ibmcloud.vpnserver.pem"
