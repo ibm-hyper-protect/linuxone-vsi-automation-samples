@@ -1,4 +1,4 @@
-# Deploys a client-to-site VPN server (Beta) in zVSI with Ansible
+# Deploys a client-to-site VPN server (Beta) in VPC with Ansible
 
 This is a sample playbook for generating a client-to-site VPN server on IBM Cloud. This creates a single subnetwork VPC
 and deploys a client-to-site VPN server into it. This playbook produces certificates for use by the VPN server and client.
@@ -34,5 +34,5 @@ If you want to use a different region add `-e region=<MZR name>` to the above co
 ## Destroy
 
 1. `ansible-playbook destroy.yml`
-   - Note: VPC and subnetwork will not be deleted - comment in last two tasks in
-     [destroy.yml](destroy.yml) if you want them deleted.
+   - Note: The client-to-site VPN server (Beta), VPC and subnetwork, and Certificate Manager will not be deleted by default - adjust settings in [ansible settings](group_vars/all.yml)
+   if you want them deleted.
