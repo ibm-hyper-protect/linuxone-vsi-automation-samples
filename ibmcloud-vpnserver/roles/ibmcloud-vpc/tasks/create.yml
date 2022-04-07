@@ -24,7 +24,11 @@
         cacheable: True
         vpc: "{{ vpc_create_output.resource }}"
 
-- when: (subnet_dict is undefined) or (subnet_dict.keys() | length < 1)
+- set_fact:
+    update_subnet: true
+  when: (subnet_dict is undefined) or (subnet_dict.keys() | length < 1)
+
+- when: update_subnet is defined
   name: Create VPC Subnets
   ibm.cloudcollection.ibm_is_subnet:
     name: "{{ item.name }}"
@@ -40,4 +44,4 @@
     cacheable: True
     subnet_dict: "{{ subnet_dict | default({}) | combine ({item.resource.zone: item.resource.id }) }}"
   with_items: "{{ subnet_create_output.results }}"
-  when: subnet_create_output.changed is true
+  when: update_subnet is defined
