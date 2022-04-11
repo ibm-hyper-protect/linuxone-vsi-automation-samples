@@ -24,6 +24,8 @@ project.
       at the time of creation.
     - If you have downloaded your `apikey.json` file from the IBM Cloud UI you may use this command:
       `export IC_API_KEY=$(cat ~/apikey.json | jq -r .apikey)`
+6. Ensure you have setup the appropriate IAM service-to-service authorizations to allow a client-to-site VPN server to access a
+  Certificate Manager. [https://cloud.ibm.com/docs/vpc?topic=vpc-client-to-site-authentication#creating-iam-service-to-service](https://cloud.ibm.com/docs/vpc?topic=vpc-client-to-site-authentication#creating-iam-service-to-service)
 
 ## Create
 
