@@ -1,4 +1,7 @@
 ibmcloud_api_key = "Your IBM Cloud API key"
 # os_type="zos" # Set if you want to create a z/OS
-# ssh_public_key_name = "angel-rsa"
+# ssh_public_key_name = "ibmcloud"
+# ssh_public_key = "/path/to/ibmcloud.pub"
+# region="ca-tor" # Required for z/OS.  Options are eu-gb, jp-tok, br-sao, ca-tor
+# image_name = ".*zos.*dev-test.*" # Required for z/OS
 # Any other variable you want to set (see variables.tf)
