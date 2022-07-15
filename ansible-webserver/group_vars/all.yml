@@ -16,7 +16,7 @@ instance-zlinux:
   image: .*ubuntu-18-04.*s390x.*
 instance-zos:
   name: "zos-vsi"
-  profile: mz2o-2x16
+  profile: mz2-2x16
   image: .*zos.*stock.*
   username: IBMUSER
   python_interpreters:
