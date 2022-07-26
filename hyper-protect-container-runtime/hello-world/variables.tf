@@ -16,7 +16,7 @@ variable "LOGDNA_INGESTION_KEY" {
 
 variable "LOGDNA_INGESTION_HOSTNAME" {
   type        = string
-  description = "Ingestion hostname (just the name the port)."
+  description = "Ingestion hostname (just the name not the port)."
 }
 
 variable "PREFIX" {
