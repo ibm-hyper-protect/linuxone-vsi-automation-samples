@@ -1,0 +1,3 @@
+services:
+  helloworld:
+    image: docker.io/library/hello-world@sha256:53f1bbee2f52c39e41682ee1d388285290c5c8a76cc92b42687eecf38e0af3f0

@@ -10,3 +10,7 @@ ibmcloud-vpnserver/*.pem
 ibmcloud-vpnserver/*.key
 ibmcloud-vpnserver/*.ovpn
 ibmcloud-vpnserver/*.password
+hyper-protect-container-runtime/**/terraform.tfstate
+hyper-protect-container-runtime/**/terraform.tfstate.backup
+hyper-protect-container-runtime/**/.terraform.tfstate.lock.info
+hyper-protect-container-runtime/**/.env
