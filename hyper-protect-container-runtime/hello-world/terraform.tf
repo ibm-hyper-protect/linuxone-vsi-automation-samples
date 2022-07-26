@@ -24,6 +24,7 @@ provider "ibm" {
 }
 
 locals {
+  # some reusable tags that identify the resources created by his sample
   tags = ["hpcr", "sample", var.PREFIX]
 }
 
@@ -33,25 +34,34 @@ resource "ibm_is_vpc" "hello_world_vpc" {
   tags = local.tags
 }
 
+# the security group
 resource "ibm_is_security_group" "hello_world_security_group" {
   name = format("%s-security-group", var.PREFIX)
   vpc  = ibm_is_vpc.hello_world_vpc.id
   tags = local.tags
 }
 
+# rule that allows the VSI to make outbound connections, this is required
+# to connect to the logDNA instance as well as to docker to pull the image
 resource "ibm_is_security_group_rule" "hello_world_outbound" {
   group     = ibm_is_security_group.hello_world_security_group.id
   direction = "outbound"
   remote    = "0.0.0.0/0"
 }
 
+# the subnet
 resource "ibm_is_subnet" "hello_world_subnet" {
-  name = format("%s-subnet", var.PREFIX)
-  vpc  = ibm_is_vpc.hello_world_vpc.id
-  zone = var.IBMCLOUD_ZONE
-  tags = local.tags
+  name                     = format("%s-subnet", var.PREFIX)
+  vpc                      = ibm_is_vpc.hello_world_vpc.id
+  total_ipv4_address_count = 256
+  zone                     = var.IBMCLOUD_ZONE
+  tags                     = local.tags
 }
 
+# we use a gateway to allow the VSI to connect to the internet to logDNA
+# and docker. Without a gateway the VSI would need a floating IP. Without
+# either the VSI will not be able to connect to the internet despite
+# an outbound rule
 resource "ibm_is_public_gateway" "hello_world_gateway" {
   name = format("%s-gateway", var.PREFIX)
   vpc  = ibm_is_vpc.hello_world_vpc.id
@@ -59,12 +69,14 @@ resource "ibm_is_public_gateway" "hello_world_gateway" {
   tags = local.tags
 }
 
+# attach the gateway to the subnet
 resource "ibm_is_subnet_public_gateway_attachment" "hello_world_gateway_attachment" {
   subnet         = ibm_is_subnet.hello_world_subnet.id
   public_gateway = ibm_is_public_gateway.hello_world_gateway.id
 }
 
-# archive of the folder containing docker-compose
+# archive of the folder containing docker-compose file. This folder could create additional resources such as files 
+# to be mounted into containers, environment files etc. This is why all of these files get bundled in a tgz file (base64 encoded)
 resource "hpcr_tgz" "contract" {
   folder = "compose"
 }
@@ -90,6 +102,8 @@ locals {
   })
 }
 
+# create a random key pair, because for formal reasons we need to pass an SSH key into the VSI. It will not be used, that's why
+# it can be random
 resource "tls_private_key" "hello_world_rsa_key" {
   algorithm = "RSA"
   rsa_bits  = 4096
@@ -102,11 +116,21 @@ resource "ibm_is_ssh_key" "hello_world_sshkey" {
   tags       = local.tags
 }
 
-data "ibm_is_image" "hyper_protect_image" {
-  name = "ibm-hyper-protect-container-runtime-1-0-s390x-3"
+# locate the latest hyper protect image
+data "ibm_is_images" "hyper_protect_images" {
+  visibility = "public"
+  status     = "available"
+
 }
 
-# encrypted and signed contract
+locals {
+  # filter the available images down to the hyper protect one
+  hyper_protect_image = one(toset([for each in data.ibm_is_images.hyper_protect_images.images : each if each.os == "hyper-protect-1-0-s390x" && each.architecture == "s390x"]))
+}
+
+# In this step we encrypt the fields of the contract and sign the env and workload field. The certificate to execute the 
+# encryption it built into the provider and matches the latest HPCR image. If required it can be overridden. 
+# We use a temporary, random keypair to execute the signature. This could also be overriden. 
 resource "hpcr_contract_encrypted" "contract" {
   contract = local.contract
 }
@@ -114,13 +138,14 @@ resource "hpcr_contract_encrypted" "contract" {
 # construct the VSI
 resource "ibm_is_instance" "hello_world_vsi" {
   name    = format("%s-vsi", var.PREFIX)
-  image   = data.ibm_is_image.hyper_protect_image.id
+  image   = local.hyper_protect_image.id
   profile = "bz2e-1x4"
   keys    = [ibm_is_ssh_key.hello_world_sshkey.id]
   vpc     = ibm_is_vpc.hello_world_vpc.id
   tags    = local.tags
   zone    = var.IBMCLOUD_ZONE
 
+  # the user data field carries the encrypted contract, so all information visible at the hypervisor layer is encrypted
   user_data = hpcr_contract_encrypted.contract.rendered
 
   primary_network_interface {
@@ -129,9 +154,4 @@ resource "ibm_is_instance" "hello_world_vsi" {
     security_groups = [ibm_is_security_group.hello_world_security_group.id]
   }
 
-}
-
-
-output "user_data" {
-  value = hpcr_contract_encrypted.contract.rendered
 }

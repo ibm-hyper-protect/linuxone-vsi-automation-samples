@@ -1,6 +1,18 @@
-## Usage
+## IBM Cloud Hyper Protect Virtual Server for IBM Cloud VPC Examples
 
-Set the following environment variables
+## Preparation
+
+- Install the [terraform CLI](https://learn.hashicorp.com/tutorials/terraform/install-cli) for your environment
+- Follow the description for the [IBM Cloud Provider](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs#authentication) to setup authentication via environment variables (e.g. using the `IC_API_KEY` variable)
+- Follow the description for [HPCR](https://cloud.ibm.com/docs/vpc?topic=vpc-about-se#hpcr_setup_logging) to setup a logging instance. Capture the endpoint as the environment variable `TF_VAR_LOGDNA_INGESTION_HOSTNAME` and the ingestion key as `TF_VAR_LOGDNA_INGESTION_KEY`
+- Select a region and zone to deploy the example to, set the `TF_VAR_IBMCLOUD_REGION` environment variable to the region and `TF_VAR_IBMCLOUD_ZONE` to the zone, e.g. like so:
+
+  ```bash
+  TF_VAR_IBMCLOUD_REGION=eu-gb
+  TF_VAR_IBMCLOUD_ZONE=eu-gb-2
+  ```
+
+After completing these steps you have the following environment variables filled in:
 
 ```text
 IC_API_KEY=
@@ -10,47 +22,9 @@ TF_VAR_LOGDNA_INGESTION_KEY=
 TF_VAR_LOGDNA_INGESTION_HOSTNAME=
 ```
 
-Initialize terraform:
+## Examples
 
-```bash
-terraform init
-```
+Follow the README in the subdirectory of the examples for further instructions:
 
-Deploy the example:
-
-```bash
-terraform apply
-```
-
-This will create a sample virtual server instance. Monitor your logDNA instance for
-
-```
-hpcr-sample-hello-world-vsi compose-helloworld-1 info
-hpcr-sample-hello-world-vsi compose-helloworld-1 info Hello from Docker!
-hpcr-sample-hello-world-vsi compose-helloworld-1 info This message shows that your installation appears to be working correctly.
-hpcr-sample-hello-world-vsi compose-helloworld-1 info
-hpcr-sample-hello-world-vsi compose-helloworld-1 info To generate this message, Docker took the following steps:
-hpcr-sample-hello-world-vsi compose-helloworld-1 info 1. The Docker client contacted the Docker daemon.
-hpcr-sample-hello-world-vsi compose-helloworld-1 info 2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
-hpcr-sample-hello-world-vsi compose-helloworld-1 info     (s390x)
-hpcr-sample-hello-world-vsi compose-helloworld-1 info 3. The Docker daemon created a new container from that image which runs the
-hpcr-sample-hello-world-vsi compose-helloworld-1 info     executable that produces the output you are currently reading.
-hpcr-sample-hello-world-vsi compose-helloworld-1 info 4. The Docker daemon streamed that output to the Docker client, which sent it
-hpcr-sample-hello-world-vsi compose-helloworld-1 info     to your terminal.
-hpcr-sample-hello-world-vsi compose-helloworld-1 info
-hpcr-sample-hello-world-vsi compose-helloworld-1 info To try something more ambitious, you can run an Ubuntu container with:
-hpcr-sample-hello-world-vsi compose-helloworld-1 info $ docker run -it ubuntu bash
-hpcr-sample-hello-world-vsi compose-helloworld-1 info
-hpcr-sample-hello-world-vsi compose-helloworld-1 info Share images, automate workflows, and more with a free Docker ID:
-hpcr-sample-hello-world-vsi compose-helloworld-1 info https://hub.docker.com/
-hpcr-sample-hello-world-vsi compose-helloworld-1 info
-hpcr-sample-hello-world-vsi compose-helloworld-1 info For more examples and ideas, visit:
-hpcr-sample-hello-world-vsi compose-helloworld-1 info https://docs.docker.com/get-started/
-hpcr-sample-hello-world-vsi compose-helloworld-1 info
-```
-
-Destroy the created resources:
-
-```bash
-terraform destroy
-```
+- [hello-world](hello-world/README.md) - a minimal hello world example
+  
