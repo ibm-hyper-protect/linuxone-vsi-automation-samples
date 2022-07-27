@@ -19,24 +19,24 @@ terraform {
 
 # make sure to target the correct region and zone
 provider "ibm" {
-  region = var.IBMCLOUD_REGION
-  zone   = var.IBMCLOUD_ZONE
+  region = var.region
+  zone   = "${var.region}-${var.zone}"
 }
 
 locals {
   # some reusable tags that identify the resources created by his sample
-  tags = ["hpcr", "sample", var.PREFIX]
+  tags = ["hpcr", "sample", var.prefix]
 }
 
 # the VPC
 resource "ibm_is_vpc" "hello_world_vpc" {
-  name = format("%s-vpc", var.PREFIX)
+  name = format("%s-vpc", var.prefix)
   tags = local.tags
 }
 
 # the security group
 resource "ibm_is_security_group" "hello_world_security_group" {
-  name = format("%s-security-group", var.PREFIX)
+  name = format("%s-security-group", var.prefix)
   vpc  = ibm_is_vpc.hello_world_vpc.id
   tags = local.tags
 }
@@ -62,10 +62,10 @@ resource "ibm_is_security_group_rule" "hello_world_inbound" {
 
 # the subnet
 resource "ibm_is_subnet" "hello_world_subnet" {
-  name                     = format("%s-subnet", var.PREFIX)
+  name                     = format("%s-subnet", var.prefix)
   vpc                      = ibm_is_vpc.hello_world_vpc.id
   total_ipv4_address_count = 256
-  zone                     = var.IBMCLOUD_ZONE
+  zone                     = "${var.region}-${var.zone}"
   tags                     = local.tags
 }
 
@@ -82,8 +82,8 @@ locals {
       "type" : "env",
       "logging" : {
         "logDNA" : {
-          "ingestionKey" : var.LOGDNA_INGESTION_KEY,
-          "hostname" : var.LOGDNA_INGESTION_HOSTNAME,
+          "ingestionKey" : var.logdna_ingestion_key,
+          "hostname" : var.logdna_ingestion_hostname,
         }
       }
     },
@@ -105,7 +105,7 @@ resource "tls_private_key" "hello_world_rsa_key" {
 
 # we only need this because VPC expects this
 resource "ibm_is_ssh_key" "hello_world_sshkey" {
-  name       = format("%s-key", var.PREFIX)
+  name       = format("%s-key", var.prefix)
   public_key = tls_private_key.hello_world_rsa_key.public_key_openssh
   tags       = local.tags
 }
@@ -131,13 +131,13 @@ resource "hpcr_contract_encrypted" "contract" {
 
 # construct the VSI
 resource "ibm_is_instance" "hello_world_vsi" {
-  name    = format("%s-vsi", var.PREFIX)
+  name    = format("%s-vsi", var.prefix)
   image   = local.hyper_protect_image.id
-  profile = var.PROFILE
+  profile = var.profile
   keys    = [ibm_is_ssh_key.hello_world_sshkey.id]
   vpc     = ibm_is_vpc.hello_world_vpc.id
   tags    = local.tags
-  zone    = var.IBMCLOUD_ZONE
+  zone    = "${var.region}-${var.zone}"
 
   # the user data field carries the encrypted contract, so all information visible at the hypervisor layer is encrypted
   user_data = hpcr_contract_encrypted.contract.rendered
@@ -152,7 +152,7 @@ resource "ibm_is_instance" "hello_world_vsi" {
 
 # attach a floating IP since we would like to access the embedded server via the internet
 resource "ibm_is_floating_ip" "hello_world_floating_ip" {
-  name   = format("%s-floating-ip", var.PREFIX)
+  name   = format("%s-floating-ip", var.prefix)
   target = ibm_is_instance.hello_world_vsi.primary_network_interface[0].id
   tags   = local.tags
 }
