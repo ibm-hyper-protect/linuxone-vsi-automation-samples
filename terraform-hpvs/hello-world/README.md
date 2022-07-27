@@ -6,6 +6,27 @@ This sample deploys the [hello-world](https://hub.docker.com/_/hello-world) exam
 
 Prepare your environment according to [these steps](../README.md)
 
+### Settings
+
+Use one of the following options to set you settings:
+
+#### Template file
+
+1. `cp my-settings.auto.tfvars-template my-settings.auto.tfvars`
+2. Fill the values in `my-settings.auto.tfvars`
+
+#### Environment variables
+
+Set the following environment variables:
+
+```text
+export IC_API_KEY=
+export TF_VAR_IBMCLOUD_ZONE=
+export TF_VAR_IBMCLOUD_REGION=
+export TF_VAR_LOGDNA_INGESTION_KEY=
+export TF_VAR_LOGDNA_INGESTION_HOSTNAME=
+```
+
 ### Run the Example
 
 Initialize terraform:
