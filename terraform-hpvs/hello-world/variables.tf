@@ -24,3 +24,9 @@ variable "PREFIX" {
   description = "Prefix for all generated resources. Make sure to have a custom image with that name."
   default     = "hpcr-sample-hello-world"
 }
+
+variable "PROFILE" {
+  type        = string
+  description = "Profile used for the VSI, this has to be a secure execution profile in the format Xz2e-YxZ, e.g. bz2e-1x4."
+  default     = "bz2e-1x4"
+}

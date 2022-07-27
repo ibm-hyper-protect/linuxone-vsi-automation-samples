@@ -139,7 +139,7 @@ resource "hpcr_contract_encrypted" "contract" {
 resource "ibm_is_instance" "hello_world_vsi" {
   name    = format("%s-vsi", var.PREFIX)
   image   = local.hyper_protect_image.id
-  profile = "bz2e-1x4"
+  profile = var.PROFILE
   keys    = [ibm_is_ssh_key.hello_world_sshkey.id]
   vpc     = ibm_is_vpc.hello_world_vpc.id
   tags    = local.tags
