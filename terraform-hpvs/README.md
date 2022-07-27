@@ -13,6 +13,7 @@
 Follow the README in the subdirectory of the examples for further instructions:
 
 - [hello-world](hello-world/README.md) - a minimal hello world example
+- [nginx](nginx-hello/README.md) - a minimal hello world example using nginx
   
 
 ## OpenSSL
