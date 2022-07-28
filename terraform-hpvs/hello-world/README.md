@@ -20,11 +20,11 @@ Use one of the following options to set you settings:
 Set the following environment variables:
 
 ```text
-export IC_API_KEY=
-export TF_VAR_zone=
-export TF_VAR_region=
-export TF_VAR_logdna_ingestion_key=
-export TF_VAR_logdna_ingestion_hostname=
+IC_API_KEY=
+TF_VAR_zone=
+TF_VAR_region=
+TF_VAR_logdna_ingestion_key=
+TF_VAR_logdna_ingestion_hostname=
 ```
 
 ### Run the Example
