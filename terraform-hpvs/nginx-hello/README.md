@@ -20,11 +20,11 @@ Use one of the following options to set you settings:
 Set the following environment variables:
 
 ```text
-export IC_API_KEY=
-export TF_VAR_IBMCLOUD_ZONE=
-export TF_VAR_IBMCLOUD_REGION=
-export TF_VAR_LOGDNA_INGESTION_KEY=
-export TF_VAR_LOGDNA_INGESTION_HOSTNAME=
+IC_API_KEY=
+TF_VAR_zone=
+TF_VAR_region=
+TF_VAR_logdna_ingestion_key=
+TF_VAR_logdna_ingestion_hostname=
 ```
 
 ### Run the Example
