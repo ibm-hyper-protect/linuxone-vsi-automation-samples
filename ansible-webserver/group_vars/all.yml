@@ -17,7 +17,7 @@ instance-zlinux:
 instance-zos:
   name: "zos-vsi"
   profile: mz2-2x16
-  image: .*zos.*stock.*
+  image: .*zos.*
   username: IBMUSER
   python_interpreters:
   - /usr/lpp/IBM/cyp/v3r9/pyz/bin/python3
