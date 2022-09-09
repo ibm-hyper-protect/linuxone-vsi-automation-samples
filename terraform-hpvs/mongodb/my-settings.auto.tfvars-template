@@ -1,0 +1,8 @@
+ibmcloud_api_key = "Your IBM Cloud API key"
+region="ca-tor" # Region to deploy to. Options include eu-gb, jp-tok, br-sao, ca-tor
+zone=1 # Zone within region to create the HPVS into.
+logdna_ingestion_key="Your LogDNA ingestion key". # You can find this in "Linux/ubuntu" section of `Logging sources` tab of "IBM Log Analysis" instance in [cloud.ibm.com](https://cloud.ibm.com)
+logdna_ingestion_hostname="Your LogDNA ingestion hostname" # Example: "syslog-a.eu-gb.logging.cloud.ibm.com"
+mongo_user="UserID that is used to login to MongoDB instance"
+mongo_password="Password that is used to login to MongoDB instance"
+# Any other variable you want to set (see variables.tf)
