@@ -1,6 +1,6 @@
-ibmcloud_api_key = "Your IBM Cloud API key"
-region="br-sao" # Region to deploy to. Options include eu-gb, jp-tok, br-sao, ca-tor
-zone=3 # Zone within region to create the HPVS into.
-logdna_ingestion_key="Your LogDNA ingestion key"
-logdna_ingestion_hostname="Your LogDNA ingestion hostname" # Example: "syslog-a.eu-gb.logging.cloud.ibm.com"
+ibmcloud_api_key="Your IBM Cloud API key"
+region="ca-tor" # Region to deploy to. Options include eu-gb, jp-tok, br-sao, ca-tor
+zone="2" # Zone within region to create the HPVS into.
+logdna_ingestion_key="Your LogDNA ingestion key". # You can find this in "Linux/ubuntu" section of `Logging sources` tab of "IBM Log Analysis" instance in [cloud.ibm.com](https://cloud.ibm.com)
+logdna_ingestion_hostname="rsyslog endpoint of IBM Log Analysis instance" # Example: "syslog-a.<region>.logging.cloud.ibm.com"
 # Any other variable you want to set (see variables.tf)
