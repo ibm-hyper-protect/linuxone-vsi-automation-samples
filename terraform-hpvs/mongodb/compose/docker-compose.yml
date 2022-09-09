@@ -1,0 +1,8 @@
+services:
+  mongo:
+    image: docker.io/s390x/mongo@sha256:2fcffe9edbf6334c159f565e15d870dc7681cd9dc527cce3d59a457333925777
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME:-mongouser}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD:-mongouser}
