@@ -3,6 +3,7 @@ variable "ibmcloud_api_key" {
                   Enter your IBM Cloud API Key, you can get your IBM Cloud API key using:
                    https://cloud.ibm.com/iam#/apikeys
                 DESC
+  sensitive  = true
 }
 
 variable "region" {
@@ -13,8 +14,9 @@ variable "region" {
     condition     = ( var.region == "eu-gb"  ||
                       var.region == "br-sao" ||
                       var.region == "ca-tor" ||
-                      var.region == "jp-tok" )
-    error_message = "Value of region must be one of eu-gb/br-sao/ca-tor/jp-tok."
+                      var.region == "jp-tok" ||
+                      var.region == "us-east" )
+    error_message = "Value of region must be one of eu-gb/br-sao/ca-tor/jp-tok/us-east."
   }
 }
 
@@ -46,7 +48,8 @@ variable "logdna_ingestion_hostname" {
   description = <<-DESC
                   rsyslog endpoint of IBM Log Analysis instance. 
                   Don't include the port. Example: 
-                  syslog-a.<region>.logging.cloud.ibm.com
+                  syslog-a.<log_region>.logging.cloud.ibm.com
+                  log_region is the region where IBM Log Analysis is deployed
                 DESC
 }
 
