@@ -19,8 +19,9 @@ terraform {
 
 # make sure to target the correct region and zone
 provider "ibm" {
-  region = var.region
-  zone   = "${var.region}-${var.zone}"
+  region           = var.region
+  zone             = "${var.region}-${var.zone}"
+  ibmcloud_api_key = var.ibmcloud_api_key
 }
 
 locals {
