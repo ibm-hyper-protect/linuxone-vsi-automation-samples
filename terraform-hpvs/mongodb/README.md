@@ -1,6 +1,6 @@
 ## MongoDB - Running s390x version of MongoDB
 
-This sample deploys the [mongodb](https://hub.docker.com/r/s390x/mongo/) on [IBM Cloud Hyper Protect Virtual Server for IBM Cloud VPC](https://cloud.ibm.com/docs/vpc?topic=vpc-about-se).
+This sample deploys 3 instances of [mongodb](https://hub.docker.com/r/s390x/mongo/) on [IBM Cloud Hyper Protect Virtual Server for IBM Cloud VPC](https://cloud.ibm.com/docs/vpc?topic=vpc-about-se) across 3 avaiability zones of a given region
 
 ### Prerequisite
 
@@ -43,28 +43,92 @@ terraform init
 terraform apply
 ```
 
-This will create a Hyper Protect Virtual Server for VPC instance and prints the public IP address of your VSI as an output to the console. You could use clients such as `mongosh` or `MongoDB Compass` to connect to the database.
+This will create 3 instances of Hyper Protect Virtual Server for VPC instances across 3 availability zones of a given region and prints the public IP address of each VSIs as an output to the console. You could use clients such as `mongosh` or `MongoDB Compass` to connect to the database.
+
+Before starting to use this setup as a cluster, login to any of the MongoDB instances and then setup the replica set.
 
 ```text
-mongodb://<mongo_user>:<mongo_password>@<public_ip>:27017/?authMechanism=DEFAULT
+mongodb://<public_ip_vsi_1>:27017
 
-Note: Default credentials are : mongouser/mongouser
+Note: This establishes a session to MongoDB instance
 ```
-
-Example: 
-```text
-mongosh -u mongouser -p mongouser mongodb://x.x.x.x:27017/
-Current Mongosh Log ID:	631af8b8c895c1ef42790efb
-Connecting to:	mongodb://<credentials>@x.x.x.x:27017/?directConnection=true&appName=mongosh+1.5.4
-Using MongoDB:	4.4.6
-Using Mongosh:	1.5.4
-.........
-.........
-test>
+Once inside the instance,  execute below commands at `test>` prompt
 ```
+test> rs.show
 
+test> rs.initiate({ _id: "<replica_set_name", members: [ {_id: 0, host: "vsi_1_public_ip:27017"}, {_id: 1, host: "vsi_2_public_ip:27017"}, {_id: 2, host: "vsi_3_public_ip:27017"} ] })
+
+The above command should give `ok: 1,` as a result in success.
+
+After the successful operation, execute:
+
+test> rs.status()
+
+This command should give an array with 3 instances of MongoDB having 1 PRIMARY and 2 SECONDARY
+```
+Example:
+```
+test> rs.show
+
+test> rs.initiate({ _id: "replicaSet01", members: [ {_id: 0, host: "xx.xx.xx.xx:27017"}, {_id: 1, host: "yy.yy.yy.yy:27017"}, {_id: 2, host: "zz.zz.zz.zz.118:27017"} ] })
+{
+  ok: 1,
+  '$clusterTime': {
+    clusterTime: Timestamp({ t: 1663579880, i: 1 }),
+    signature: {
+      hash: Binary(Buffer.from("0000000000000000000000000000000000000000", "hex"), 0),
+      keyId: Long("0")
+    }
+  },
+  operationTime: Timestamp({ t: 1663579880, i: 1 })
+}
+
+test> rs.status()
+{
+  set: 'replicaSet01',
+  date: ISODate("2022-09-19T09:31:25.003Z"),
+  myState: 2,
+  term: Long("0"),
+.....
+......
+ members: [
+    {
+      _id: 0,
+      name: 'xx.xx.xx.xx:27017',
+      health: 1,
+      state: 2,
+      stateStr: 'SECONDARY',
+	  ...
+	  ...
+	},
+	{
+      _id: 1,
+      name: 'yy.yy.yy.yy:27017',
+      health: 1,
+      state: 1,
+      stateStr: 'PRIMARY',
+	  ...
+	  ...
+	},
+	{
+	      _id: 2,
+      name: 'zz.zz.zz.zz:27017',
+      health: 1,
+      state: 2,
+      stateStr: 'SECONDARY',
+	}```
+
+TEST: You could reboot the `PRIMARY` node and see that the cluster will have a new `PRIMARY` elected.
+
+After setting up the cluster, exit and then login to the cluster by passing-in `IP:port` of all the 3 instances as given below:
+
+```
+mongosh mongodb://xx.xx.xx.xx:27017,yy.yy.yy.yy:27017,zz.zz.zz.zz:27017
+```
 - Destroy the created resources:
 
 ```bash
 terraform destroy
 ```
+
+**TODO**: Currently the auth is disabled while setting up replication. This repo will be updated once there is support for enabling authentication.

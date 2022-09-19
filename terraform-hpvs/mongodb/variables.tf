@@ -18,19 +18,6 @@ variable "region" {
   }
 }
 
-variable "zone" {
-  type        = string
-  default     = "2"
-  description = "Zone to deploy to, e.g. 2."
-
-  validation {
-    condition     = ( var.zone == "1" ||
-                      var.zone == "2" ||
-                      var.zone == "3")
-    error_message = "Value of zone must be one of 1/2/3."
-  }
-}
-
 variable "logdna_ingestion_key" {
   type        = string
   sensitive   = true
@@ -75,4 +62,10 @@ variable "mongo_password" {
   type        = string
   default     = "mongouser"
   description = "Password that is used to login to MongoDB instance"
+}
+
+variable "mongo_replica_set_name" {
+  type        = string
+  default     = "replicaSet01"
+  description = "Replica set name that is used to configure MongoDB"
 }

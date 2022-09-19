@@ -19,8 +19,8 @@ terraform {
 
 # Make sure to target the correct region and zone
 provider "ibm" {
-  region = var.region
-  zone   = "${var.region}-${var.zone}"
+  region           = var.region
+  ibmcloud_api_key = var.ibmcloud_api_key
 }
 
 locals {
@@ -62,10 +62,11 @@ resource "ibm_is_security_group_rule" "mongodb_inbound" {
 
 # The subnet
 resource "ibm_is_subnet" "mongodb_subnet" {
-  name                     = format("%s-subnet", var.prefix)
+  for_each = toset(["1", "2", "3"])
+  name                     = format("%s-subnet-%s", var.prefix, each.key)
   vpc                      = ibm_is_vpc.mongodb_vpc.id
   total_ipv4_address_count = 256
-  zone                     = "${var.region}-${var.zone}"
+  zone                     = "${var.region}-${each.key}"
   tags                     = local.tags
 }
 
@@ -90,6 +91,7 @@ locals {
       "env" : {
           "MONGO_INITDB_ROOT_USERNAME" : var.mongo_user,
           "MONGO_INITDB_ROOT_PASSWORD" : var.mongo_password,
+          "MONGO_REPLICA_SET_NAME"     : var.mongo_replica_set_name,
       }
     },
     "workload" : {
@@ -137,13 +139,14 @@ resource "hpcr_contract_encrypted" "contract" {
 
 # Construct the VSI
 resource "ibm_is_instance" "mongodb_vsi" {
-  name    = format("%s-vsi", var.prefix)
+  for_each = toset(["1", "2", "3"])
+  name    = format("%s-vsi-%s", var.prefix, each.key)
   image   = local.hyper_protect_image.id
   profile = var.profile
   keys    = [ibm_is_ssh_key.mongodb_sshkey.id]
   vpc     = ibm_is_vpc.mongodb_vpc.id
   tags    = local.tags
-  zone    = "${var.region}-${var.zone}"
+  zone    = "${var.region}-${each.key}"
 
   # user data field carries the encrypted contract, so all information visible at
   # the hypervisor layer is encrypted
@@ -151,20 +154,33 @@ resource "ibm_is_instance" "mongodb_vsi" {
 
   primary_network_interface {
     name            = "eth0"
-    subnet          = ibm_is_subnet.mongodb_subnet.id
+    subnet          = ibm_is_subnet.mongodb_subnet[each.key].id
     security_groups = [ibm_is_security_group.mongodb_security_group.id]
   }
 }
 
 # Attach a floating IP since VSI needs to push logs to logDNA server
 resource "ibm_is_floating_ip" "mongodb_floating_ip" {
-  name   = format("%s-floating-ip", var.prefix)
-  target = ibm_is_instance.mongodb_vsi.primary_network_interface[0].id
+  for_each = toset(["1", "2", "3"])
+  name   = format("%s-floating-ip-%s", var.prefix,each.key)
+  target = ibm_is_instance.mongodb_vsi[each.key].primary_network_interface[0].id
   tags   = local.tags
 }
 
 # Log the floating IP for convenience
-output "ip" {
-  value = resource.ibm_is_floating_ip.mongodb_floating_ip.address
-  description = "The public IP address of the VSI" 
+output "ip_vsi_1" {
+  value = resource.ibm_is_floating_ip.mongodb_floating_ip[1].address
+  description = "The public IP address of the VSI_1"
+}
+
+# Log the floating IP for convenience
+output "ip_vsi_2" {
+  value = resource.ibm_is_floating_ip.mongodb_floating_ip[2].address
+  description = "The public IP address of the VSI_2"
+}
+
+# Log the floating IP for convenience
+output "ip_vsi_3" {
+  value = resource.ibm_is_floating_ip.mongodb_floating_ip[3].address
+  description = "The public IP address of the VSI_3"
 }
