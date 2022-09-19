@@ -14,3 +14,4 @@ terraform-hpvs/**/terraform.tfstate
 terraform-hpvs/**/terraform.tfstate.backup
 terraform-hpvs/**/.terraform.tfstate.lock.info
 terraform-hpvs/**/.env
+terraform-hpvs/log-encryption/compose/key.pub
