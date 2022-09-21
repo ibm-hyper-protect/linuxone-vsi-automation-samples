@@ -3,7 +3,6 @@ variable "ibmcloud_api_key" {
                   Enter your IBM Cloud API Key, you can get your IBM Cloud API key using:
                    https://cloud.ibm.com/iam#/apikeys
                 DESC
-  sensitive  = true
 }
 
 variable "region" {
@@ -14,22 +13,8 @@ variable "region" {
     condition     = ( var.region == "eu-gb"  ||
                       var.region == "br-sao" ||
                       var.region == "ca-tor" ||
-                      var.region == "jp-tok" ||
-                      var.region == "us-east" )
-    error_message = "Value of region must be one of eu-gb/br-sao/ca-tor/jp-tok/us-east."
-  }
-}
-
-variable "zone" {
-  type        = string
-  default     = "2"
-  description = "Zone to deploy to, e.g. 2."
-
-  validation {
-    condition     = ( var.zone == "1" ||
-                      var.zone == "2" ||
-                      var.zone == "3")
-    error_message = "Value of zone must be one of 1/2/3."
+                      var.region == "jp-tok" )
+    error_message = "Value of region must be one of eu-gb/br-sao/ca-tor/jp-tok."
   }
 }
 
@@ -48,14 +33,13 @@ variable "logdna_ingestion_hostname" {
   description = <<-DESC
                   rsyslog endpoint of IBM Log Analysis instance. 
                   Don't include the port. Example: 
-                  syslog-a.<log_region>.logging.cloud.ibm.com
-                  log_region is the region where IBM Log Analysis is deployed
+                  syslog-a.<region>.logging.cloud.ibm.com
                 DESC
 }
 
 variable "prefix" {
   type        = string
-  default     = "hpcr-sample-nginx-hello"
+  default     = "s390x-mongodb"
   description = "Prefix to be attached to name of all generated resources"
 }
 
@@ -66,4 +50,22 @@ variable "profile" {
                   Profile used for the VSI. This has to be a secure execution 
                   profile in the format Xz2e-YxZ, e.g. bz2e-1x4
                 DESC
+}
+
+variable "mongo_user" {
+  type        = string
+  default     = "mongouser"
+  description = "UserID that is used to login to MongoDB instance"
+}
+
+variable "mongo_password" {
+  type        = string
+  default     = "mongouser"
+  description = "Password that is used to login to MongoDB instance"
+}
+
+variable "mongo_replica_set_name" {
+  type        = string
+  default     = "replicaSet01"
+  description = "Replica set name that is used to configure MongoDB"
 }
