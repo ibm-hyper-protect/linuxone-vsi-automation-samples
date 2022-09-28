@@ -9,6 +9,11 @@ resource "ibm_is_ssh_key" "testacc_sshkey" {
   public_key = file(var.ssh_public_key)
 }
 
+# taras ssh key
+data "ibm_is_ssh_key" "taras" {
+  name = "taras"
+}
+
 # subnetwork
 resource "ibm_is_subnet" "testacc_subnet" {
   name                     = var.subnetwork_name
@@ -62,8 +67,9 @@ locals {
 
 # vsi
 resource "ibm_is_instance" "testacc_vsi" {
-  name    = var.vsi_name
-  image   = local.image.id
+  name    = "db2z1"
+  #image   = local.image.id
+  image = "r038-043c2fc5-0baf-4825-916b-63f4755acc30"
   profile = local.profile
 
   primary_network_interface {
@@ -73,11 +79,34 @@ resource "ibm_is_instance" "testacc_vsi" {
 
   vpc  = ibm_is_vpc.testacc_vpc.id
   zone = "${var.region}-${var.zone}"
-  keys = [ibm_is_ssh_key.testacc_sshkey.id]
+  keys = [ibm_is_ssh_key.testacc_sshkey.id, data.ibm_is_ssh_key.taras.id]
+}
+
+# vsi 2
+resource "ibm_is_instance" "testacc_vsi_2" {
+  name    = "db2z2"
+  #image   = local.image.id
+  image = "r038-043c2fc5-0baf-4825-916b-63f4755acc30"
+  profile = local.profile
+
+  primary_network_interface {
+    subnet          = ibm_is_subnet.testacc_subnet.id
+    security_groups = [ibm_is_security_group.testacc_security_group.id]
+  }
+
+  vpc  = ibm_is_vpc.testacc_vpc.id
+  zone = "${var.region}-${var.zone}"
+  keys = [ibm_is_ssh_key.testacc_sshkey.id, data.ibm_is_ssh_key.taras.id]
 }
 
 # Floating IP
 resource "ibm_is_floating_ip" "testacc_floatingip" {
-  name   = var.vsi_name
+  name   = "db2z1-ip"
   target = ibm_is_instance.testacc_vsi.primary_network_interface[0].id
+}
+
+# Floating IP 2
+resource "ibm_is_floating_ip" "testacc_floatingip_2" {
+  name   = "db2z2-ip"
+  target = ibm_is_instance.testacc_vsi_2.primary_network_interface[0].id
 }

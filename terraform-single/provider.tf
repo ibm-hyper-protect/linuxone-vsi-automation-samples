@@ -3,16 +3,22 @@ variable "ibmcloud_api_key" {
 }
 
 terraform {
+  cloud {
+    organization = "liquibase"
+    workspaces {
+      name = "infrastructure-ibm-cloud"
+    }
+  }
   required_providers {
     ibm = {
-      source = "IBM-Cloud/ibm"
-      version = ">= 1.43.0"
+      source  = "IBM-Cloud/ibm"
+      version = ">= 1.45.1"
     }
   }
 }
 
 # Configure the IBM Provider
 provider "ibm" {
-  ibmcloud_api_key      = var.ibmcloud_api_key
-  region = var.region
+  ibmcloud_api_key = var.ibmcloud_api_key
+  region           = var.region
 }
