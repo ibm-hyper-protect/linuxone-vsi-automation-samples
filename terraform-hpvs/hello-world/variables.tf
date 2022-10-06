@@ -1,9 +1,10 @@
 variable "ibmcloud_api_key" {
+  type        = string
+  sensitive  = true
   description = <<-DESC
                   Enter your IBM Cloud API Key, you can get your IBM Cloud API key using:
                    https://cloud.ibm.com/iam#/apikeys
                 DESC
-  sensitive  = true
 }
 
 variable "region" {
@@ -50,6 +51,13 @@ variable "logdna_ingestion_hostname" {
                   Don't include the port. Example: 
                   syslog-a.<log_region>.logging.cloud.ibm.com
                   log_region is the region where IBM Log Analysis is deployed
+                DESC
+}
+
+variable "private_container_registry" {
+  type        = string
+  description = <<-DESC
+				  The private container registry. Example: uk.icr.io
                 DESC
 }
 

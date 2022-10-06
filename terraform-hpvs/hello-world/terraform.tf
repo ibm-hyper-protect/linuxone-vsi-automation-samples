@@ -12,7 +12,7 @@ terraform {
 
     ibm = {
       source  = "IBM-Cloud/ibm"
-      version = ">= 1.37.1"
+      version = ">= 1.45.1"
     }
   }
 }
@@ -97,7 +97,13 @@ locals {
       "type" : "workload",
       "compose" : {
         "archive" : hpcr_tgz.contract.rendered
-      }
+      },
+	  "auths" : {
+	    (var.private_container_registry) : {
+	      "password" : var.ibmcloud_api_key,
+		  "username" : "iamapikey"
+		}
+	  }
     }
   })
 }
@@ -120,7 +126,6 @@ resource "ibm_is_ssh_key" "hello_world_sshkey" {
 data "ibm_is_images" "hyper_protect_images" {
   visibility = "public"
   status     = "available"
-
 }
 
 locals {
