@@ -167,14 +167,84 @@ resource "restapi_object" "vpnclient_cert" {
   debug        = true
 }
 
-output "vpnclient_cert_id" {
-  value = restapi_object.vpnclient_cert.id
+
+
+# subnetwork
+resource "ibm_is_subnet" "testacc_subnet" {
+  name                     = var.subnetwork_name
+  vpc                      = var.vpc_guid
+  zone                     = local.full_zone
+  total_ipv4_address_count = var.total_ipv4_address_count
 }
 
-output "vpnserver_cert_id" {
-  value = restapi_object.vpnserver_cert.id
+# security group
+resource "ibm_is_security_group" "testacc_security_group" {
+  name = var.security_group_name
+  vpc = var.vpc_guid
 }
 
-output "vpn_ca_cert_id" {
-  value = restapi_object.vpn_ca_cert.id
+# Configure Security Group Rule to open the VPN port
+resource "ibm_is_security_group_rule" "testacc_security_group_rule_vpn" {
+  group = ibm_is_security_group.testacc_security_group.id
+  direction = "inbound"
+  remote = "0.0.0.0/0"
+  udp {
+    port_min = var.vpn_port
+    port_max = var.vpn_port
+  }
+}
+
+data "ibm_secrets_manager_secret" "vpnserver_secret" {
+  instance_id = var.secrets_manager_guid
+  secret_type = "imported_cert"
+  secret_id = restapi_object.vpnserver_cert.id
+}
+
+data "ibm_secrets_manager_secret" "vpnclient_ca_secret" {
+  instance_id = var.secrets_manager_guid
+  secret_type = "imported_cert"
+  secret_id = restapi_object.vpnclient_cert.id
+}
+
+
+resource "ibm_is_vpn_server" "vpn_server" {
+  certificate_crn = data.ibm_secrets_manager_secret.vpnserver_secret.crn
+  client_authentication {
+    method    = "certificate"
+    client_ca_crn = data.ibm_secrets_manager_secret.vpnclient_ca_secret.crn
+  }
+  client_ip_pool         = var.vpnserver_client_ip_pool
+  enable_split_tunneling = true
+  name                   = var.vpnserver_name
+  port                   = var.vpn_port
+  protocol               = local.vpn_protocol
+  subnets                = [ibm_is_subnet.testacc_subnet.id]
+}
+
+
+resource "ibm_is_vpn_server_route" "server_routes" {
+  for_each = var.vpc_address_prefixes_map
+  vpn_server = ibm_is_vpn_server.vpn_server.id
+  destination = each.value.cidr
+  action = "translate"
+}
+
+output "vpn_protocol" {
+  value = local.vpn_protocol
+}
+
+output "vpn_hostname" {
+  value = ibm_is_vpn_server.vpn_server.hostname
+}
+
+output "vpn_ca_cert_content" {
+  value = tls_self_signed_cert.ca_cert.cert_pem
+}
+
+output "vpn_client_cert_content" {
+  value = tls_locally_signed_cert.vpnclient_cert.cert_pem
+}
+
+output "vpn_client_key_content" {
+  value = tls_private_key.vpnclient_private_key.private_key_pem
 }
