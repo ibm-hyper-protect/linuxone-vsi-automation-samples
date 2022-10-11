@@ -5,7 +5,7 @@ resource "ibm_is_vpc" "testacc_vpc" {
 
 # ssh key
 resource "ibm_is_ssh_key" "testacc_sshkey" {
-  name      = var.ssh_public_key_name
+  name       = var.ssh_public_key_name
   public_key = file(var.ssh_public_key)
 }
 
@@ -20,7 +20,7 @@ resource "ibm_is_subnet" "testacc_subnet" {
 # security group
 resource "ibm_is_security_group" "testacc_security_group" {
   name = var.vsi_name
-  vpc = ibm_is_vpc.testacc_vpc.id
+  vpc  = ibm_is_vpc.testacc_vpc.id
 }
 
 # rule that allows the VSI to make outbound connections, this is required
@@ -33,13 +33,24 @@ resource "ibm_is_security_group_rule" "testacc_security_group_rule_outbound" {
 
 # Configure Security Group Rule to open SSH
 resource "ibm_is_security_group_rule" "testacc_security_group_rule_ssh" {
-  group = ibm_is_security_group.testacc_security_group.id
+  group     = ibm_is_security_group.testacc_security_group.id
   direction = "inbound"
-  remote = "0.0.0.0/0"
-  # tcp {
-  #   port_min = 22
-  #   port_max = 22
-  # }
+  remote    = "0.0.0.0/0"
+  tcp {
+    port_min = 22
+    port_max = 22
+  }
+}
+
+# Configure Security Group Rule to open DB2
+resource "ibm_is_security_group_rule" "testacc_security_group_rule_db2" {
+  group     = ibm_is_security_group.testacc_security_group.id
+  direction = "inbound"
+  remote    = "0.0.0.0/0"
+  tcp {
+    port_min = 8100
+    port_max = 8100
+  }
 }
 
 # Images
@@ -56,7 +67,7 @@ resource "ibm_is_instance" "testacc_vsi" {
   profile = local.profile
 
   primary_network_interface {
-    subnet = ibm_is_subnet.testacc_subnet.id
+    subnet          = ibm_is_subnet.testacc_subnet.id
     security_groups = [ibm_is_security_group.testacc_security_group.id]
   }
 
@@ -69,10 +80,4 @@ resource "ibm_is_instance" "testacc_vsi" {
 resource "ibm_is_floating_ip" "testacc_floatingip" {
   name   = var.vsi_name
   target = ibm_is_instance.testacc_vsi.primary_network_interface[0].id
-}
-
-# log the floating IP for convenience
-output "ip" {
-  value = resource.ibm_is_floating_ip.testacc_floatingip.address
-  description = "The public IP address of the VSI" 
 }

@@ -13,3 +13,4 @@ ibmcloud-vpnserver/*.key
 ibmcloud-vpnserver/*.ovpn
 ibmcloud-vpnserver/*.password
 terraform-hpvs/**/.env
+terraform-hpvs/log-encryption/compose/key.pub
