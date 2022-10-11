@@ -170,7 +170,7 @@ resource "restapi_object" "vpnclient_cert" {
 
 
 # subnetwork
-resource "ibm_is_subnet" "testacc_subnet" {
+resource "ibm_is_subnet" "vpc_subnet" {
   name                     = var.subnetwork_name
   vpc                      = var.vpc_guid
   zone                     = local.full_zone
@@ -178,14 +178,14 @@ resource "ibm_is_subnet" "testacc_subnet" {
 }
 
 # security group
-resource "ibm_is_security_group" "testacc_security_group" {
+resource "ibm_is_security_group" "vpnserver_security_group" {
   name = var.security_group_name
   vpc = var.vpc_guid
 }
 
 # Configure Security Group Rule to open the VPN port
-resource "ibm_is_security_group_rule" "testacc_security_group_rule_vpn" {
-  group = ibm_is_security_group.testacc_security_group.id
+resource "ibm_is_security_group_rule" "vpnserver_security_group_rule_vpn" {
+  group = ibm_is_security_group.vpnserver_security_group.id
   direction = "inbound"
   remote = "0.0.0.0/0"
   udp {
@@ -218,7 +218,8 @@ resource "ibm_is_vpn_server" "vpn_server" {
   name                   = var.vpnserver_name
   port                   = var.vpn_port
   protocol               = local.vpn_protocol
-  subnets                = [ibm_is_subnet.testacc_subnet.id]
+  subnets                = [ibm_is_subnet.vpc_subnet.id]
+  security_groups        = [ibm_is_security_group.vpnserver_security_group.id]
 }
 
 
