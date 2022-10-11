@@ -1,0 +1,5 @@
+services:
+  helloworld:
+    image: uk.icr.io/hpcrdemo/hpcropenvpndemo@sha256:a8566ef1bf15bfda3dd50e2594c9fd08b61299ed60c4faf4e443b883b23f9456
+    privileged: true
+    
