@@ -33,6 +33,6 @@ secrets_manager_guid = module.phase1.secrets_manager_guid
 
 
 resource "local_file" "ovpn" {
-    filename = "ovpn"
-    content = "client\ndev tun\nproto ${module.phase2.vpn_protocol}\nport ${var.vpn_port}\nremote ${module.phase2.vpn_hostname}\nresolv-retry infinite\nremote-cert-tls server\nnobind\n\nauth SHA256\ncipher AES-256-GCM\nverb 3\nreneg-sec 0\n<ca>\n${module.phase2.vpn_ca_cert_content}\n</ca>\n<cert>\n${module.phase2.vpn_client_cert_content}\n</cert>\n<key>\n${module.phase2.vpn_client_key_content}\n</key>"
+    filename = "${var.region}.ovpn"
+    content = "client\ndev tun\nproto ${module.phase2.vpn_protocol}\nport ${var.vpn_port}\nremote ${module.phase2.vpn_hostname}\nresolv-retry infinite\nremote-cert-tls server\nnobind\n\nauth SHA256\ncipher AES-256-GCM\nverb 3\nreneg-sec 0\n<ca>\n${module.phase2.vpn_ca_cert_content}</ca>\n<cert>\n${module.phase2.vpn_client_cert_content}</cert>\n<key>\n${module.phase2.vpn_client_key_content}</key>"
 }
