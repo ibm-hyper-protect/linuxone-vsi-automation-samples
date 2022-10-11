@@ -29,30 +29,30 @@ locals {
 }
 
 # the VPC
-resource "ibm_is_vpc" "hello_world_vpc" {
+resource "ibm_is_vpc" "hpcr_sample_vpc" {
   name = format("%s-vpc", var.prefix)
   tags = local.tags
 }
 
 # the security group
-resource "ibm_is_security_group" "hello_world_security_group" {
+resource "ibm_is_security_group" "hpcr_sample_security_group" {
   name = format("%s-security-group", var.prefix)
-  vpc  = ibm_is_vpc.hello_world_vpc.id
+  vpc  = ibm_is_vpc.hpcr_sample_vpc.id
   tags = local.tags
 }
 
 # rule that allows the VSI to make outbound connections, this is required
 # to connect to the logDNA instance as well as to docker to pull the image
-resource "ibm_is_security_group_rule" "hello_world_outbound" {
-  group     = ibm_is_security_group.hello_world_security_group.id
+resource "ibm_is_security_group_rule" "hpcr_sample_outbound" {
+  group     = ibm_is_security_group.hpcr_sample_security_group.id
   direction = "outbound"
   remote    = "0.0.0.0/0"
 }
 
 # the subnet
-resource "ibm_is_subnet" "hello_world_subnet" {
+resource "ibm_is_subnet" "hpcr_sample_subnet" {
   name                     = format("%s-subnet", var.prefix)
-  vpc                      = ibm_is_vpc.hello_world_vpc.id
+  vpc                      = ibm_is_vpc.hpcr_sample_vpc.id
   total_ipv4_address_count = 256
   zone                     = "${var.region}-${var.zone}"
   tags                     = local.tags
@@ -62,17 +62,17 @@ resource "ibm_is_subnet" "hello_world_subnet" {
 # and docker. Without a gateway the VSI would need a floating IP. Without
 # either the VSI will not be able to connect to the internet despite
 # an outbound rule
-resource "ibm_is_public_gateway" "hello_world_gateway" {
+resource "ibm_is_public_gateway" "hpcr_sample_gateway" {
   name = format("%s-gateway", var.prefix)
-  vpc  = ibm_is_vpc.hello_world_vpc.id
+  vpc  = ibm_is_vpc.hpcr_sample_vpc.id
   zone = "${var.region}-${var.zone}"
   tags = local.tags
 }
 
 # attach the gateway to the subnet
-resource "ibm_is_subnet_public_gateway_attachment" "hello_world_gateway_attachment" {
-  subnet         = ibm_is_subnet.hello_world_subnet.id
-  public_gateway = ibm_is_public_gateway.hello_world_gateway.id
+resource "ibm_is_subnet_public_gateway_attachment" "hpcr_sample_gateway_attachment" {
+  subnet         = ibm_is_subnet.hpcr_sample_subnet.id
+  public_gateway = ibm_is_public_gateway.hpcr_sample_gateway.id
 }
 
 # archive of the folder containing docker-compose file. This folder could create additional resources such as files 
@@ -110,15 +110,15 @@ locals {
 
 # create a random key pair, because for formal reasons we need to pass an SSH key into the VSI. It will not be used, that's why
 # it can be random
-resource "tls_private_key" "hello_world_rsa_key" {
+resource "tls_private_key" "hpcr_sample_rsa_key" {
   algorithm = "RSA"
   rsa_bits  = 4096
 }
 
 # we only need this because VPC expects this
-resource "ibm_is_ssh_key" "hello_world_sshkey" {
+resource "ibm_is_ssh_key" "hpcr_sample_sshkey" {
   name       = format("%s-key", var.prefix)
-  public_key = tls_private_key.hello_world_rsa_key.public_key_openssh
+  public_key = tls_private_key.hpcr_sample_rsa_key.public_key_openssh
   tags       = local.tags
 }
 
@@ -141,12 +141,12 @@ resource "hpcr_contract_encrypted" "contract" {
 }
 
 # construct the VSI
-resource "ibm_is_instance" "hello_world_vsi" {
+resource "ibm_is_instance" "hpcr_sample_vsi" {
   name    = format("%s-vsi", var.prefix)
   image   = local.hyper_protect_image.id
   profile = var.profile
-  keys    = [ibm_is_ssh_key.hello_world_sshkey.id]
-  vpc     = ibm_is_vpc.hello_world_vpc.id
+  keys    = [ibm_is_ssh_key.hpcr_sample_sshkey.id]
+  vpc     = ibm_is_vpc.hpcr_sample_vpc.id
   tags    = local.tags
   zone    = "${var.region}-${var.zone}"
 
@@ -155,8 +155,8 @@ resource "ibm_is_instance" "hello_world_vsi" {
 
   primary_network_interface {
     name            = "eth0"
-    subnet          = ibm_is_subnet.hello_world_subnet.id
-    security_groups = [ibm_is_security_group.hello_world_security_group.id]
+    subnet          = ibm_is_subnet.hpcr_sample_subnet.id
+    security_groups = [ibm_is_security_group.hpcr_sample_security_group.id]
   }
 
 }

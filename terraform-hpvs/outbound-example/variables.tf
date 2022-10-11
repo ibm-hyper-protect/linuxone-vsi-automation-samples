@@ -63,7 +63,7 @@ variable "private_container_registry" {
 
 variable "prefix" {
   type        = string
-  default     = "hpcr-sample-hello-world"
+  default     = "hpcr-sample"
   description = "Prefix to be attached to name of all generated resources"
 }
 
