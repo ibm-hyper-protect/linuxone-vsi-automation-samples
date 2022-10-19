@@ -1,0 +1,23 @@
+services:
+  postgresql:
+    image: docker.io/library/postgres:12@sha256:d5433064852277f3187a591e02780d377c253f69bfbe3ca66c4cf3d58be83996
+    ports:
+      - "5432:5432"
+    restart: always
+    environment:
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    command:
+      - /bin/bash
+      - -c
+      - |
+        docker-entrypoint.sh postgres &
+        sleep 2
+        su postgres -c "psql -c \"CREATE ROLE replica WITH REPLICATION PASSWORD 'testpassword' LOGIN;\""
+        su postgres -c "psql -c 'create database database_for_demo;'"
+        su postgres -c "psql -c '\c database_for_demo;' -c 'CREATE TABLE TABLE_FOR_DEMO(ID INT PRIMARY KEY NOT NULL, NUMBER INT NOT NULL);'"
+        su postgres -c "psql -c '\c database_for_demo;' -c 'INSERT INTO TABLE_FOR_DEMO (ID,NUMBER) VALUES (1, 1234567);'"
+        su postgres -c "psql -c '\c database_for_demo;' -c 'INSERT INTO TABLE_FOR_DEMO (ID,NUMBER) VALUES (2, 7654321);'"
+        sed -i '$$a host replication replica all trust' /var/lib/postgresql/data/pg_hba.conf
+        kill %1
+        wait
+        docker-entrypoint.sh postgres
