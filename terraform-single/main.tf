@@ -11,7 +11,11 @@ resource "ibm_is_ssh_key" "testacc_sshkey" {
 
 # taras ssh key
 data "ibm_is_ssh_key" "taras" {
-  name = "taras"
+  name = "tarasnew"
+}
+# andrii t ssh key
+data "ibm_is_ssh_key" "atytarchuk" {
+  name = "atytarchuk"
 }
 
 # subnetwork
@@ -79,7 +83,7 @@ resource "ibm_is_instance" "testacc_vsi" {
 
   vpc  = ibm_is_vpc.testacc_vpc.id
   zone = "${var.region}-${var.zone}"
-  keys = [ibm_is_ssh_key.testacc_sshkey.id, data.ibm_is_ssh_key.taras.id]
+  keys = [ibm_is_ssh_key.testacc_sshkey.id, data.ibm_is_ssh_key.taras.id, data.ibm_is_ssh_key.atytarchuk.id]
 }
 
 # vsi 2
