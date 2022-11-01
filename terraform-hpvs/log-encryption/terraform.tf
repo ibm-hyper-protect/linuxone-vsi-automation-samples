@@ -95,6 +95,7 @@ resource "ibm_is_subnet_public_gateway_attachment" "log_encryption_gateway_attac
 # to be mounted into containers, environment files etc. This is why all of these files get bundled in a tgz file (base64 encoded)
 resource "hpcr_tgz" "contract" {
   folder = "compose"
+  depends_on = [local_file.log_encryption_logging_public_key]
 }
 
 locals {
