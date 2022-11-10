@@ -1,11 +1,3 @@
-variable "ibmcloud_api_key" {
-  description = <<-DESC
-                  Enter your IBM Cloud API Key, you can get your IBM Cloud API key using:
-                   https://cloud.ibm.com/iam#/apikeys
-                DESC
-  sensitive  = true
-}
-
 variable "region" {
   type        = string
   description = "Region to deploy to, e.g. eu-gb"
@@ -33,6 +25,21 @@ variable "zone" {
   }
 }
 
+variable "prefix" {
+  type        = string
+  default     = "hpcr-sample-nginx-hello"
+  description = "Prefix to be attached to name of all generated resources"
+}
+
+variable "profile" {
+  type        = string
+  default     = "bz2e-1x4"
+  description = <<-DESC
+                  Profile used for the VSI. This has to be a secure execution 
+                  profile in the format Xz2e-YxZ, e.g. bz2e-1x4
+                DESC
+}
+
 variable "logdna_ingestion_key" {
   type        = string
   sensitive   = true
@@ -50,20 +57,5 @@ variable "logdna_ingestion_hostname" {
                   Don't include the port. Example: 
                   syslog-a.<log_region>.logging.cloud.ibm.com
                   log_region is the region where IBM Log Analysis is deployed
-                DESC
-}
-
-variable "prefix" {
-  type        = string
-  default     = "hpcr-sample-nginx-hello"
-  description = "Prefix to be attached to name of all generated resources"
-}
-
-variable "profile" {
-  type        = string
-  default     = "bz2e-1x4"
-  description = <<-DESC
-                  Profile used for the VSI. This has to be a secure execution 
-                  profile in the format Xz2e-YxZ, e.g. bz2e-1x4
                 DESC
 }
