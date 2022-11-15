@@ -1,0 +1,8 @@
+libvirt_host="Your libvirt host name"
+libvirt_user="User name authorized by a SSH server in your libvirt host"
+vsi_image="Path to your VSI image"
+logdna_ingestion_key="Your LogDNA ingestion key". # You can find this in "Linux/ubuntu" section of `Logging sources` tab of "IBM Log Analysis" instance in [cloud.ibm.com](https://cloud.ibm.com)
+logdna_ingestion_hostname="rsyslog endpoint of IBM Log Analysis instance"
+# Example: "syslog-a.<log_region>.logging.cloud.ibm.com". Where <log_region> is
+# the region on which IBM Log Analysis is deployed
+# Any other variable you want to set (see variables.tf)
