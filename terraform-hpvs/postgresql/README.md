@@ -8,15 +8,6 @@ Prepare your environment according to [these steps](https://github.com/ibm-hyper
 ​
 ### Settings
 ​
-Set the following environment variables:
-​
-```text
-export IBMCLOUD_API_ENDPOINT=https://test.cloud.ibm.com
-export IBMCLOUD_IAM_API_ENDPOINT=https://iam.test.cloud.ibm.com
-export IBMCLOUD_IS_NG_API_ENDPOINT=https://us-south-*.cloud.ibm.com/v1 #set the value
-export IBMCLOUD_IS_API_ENDPOINT=https://us-south-*.cloud.ibm.com #set the value
-```
-​
 Set the default vaule of variables.tf:
 ​
 ```text
