@@ -95,6 +95,7 @@ resource "ibm_is_subnet_public_gateway_attachment" "log_encryption_gateway_attac
 # to be mounted into containers, environment files etc. This is why all of these files get bundled in a tgz file (base64 encoded)
 resource "hpcr_tgz" "contract" {
   folder = "compose"
+  depends_on = [local_file.log_encryption_logging_public_key]
 }
 
 locals {
@@ -141,7 +142,7 @@ data "ibm_is_images" "hyper_protect_images" {
 
 locals {
   # filter the available images down to the hyper protect one
-  hyper_protect_image = one(toset([for each in data.ibm_is_images.hyper_protect_images.images : each if each.os == "hyper-protect-1-0-s390x" && each.architecture == "s390x"]))
+  hyper_protect_image = [for each in data.ibm_is_images.hyper_protect_images.images : each if each.os == "hyper-protect-1-0-s390x" && each.architecture == "s390x"][0]
 }
 
 # In this step we encrypt the fields of the contract and sign the env and workload field. The certificate to execute the 

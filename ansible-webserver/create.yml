@@ -91,7 +91,7 @@
                         items2dict(key_name='name', value_name='id') }}"
 
     - name: Create VSI
-      when: (vsi is undefined) or (vsi == None) or (cache_vsi is false)
+      when: (vsi is undefined) or (vsi == None) or (not cache_vsi)
       ibm_is_instance:
         name: "{{ instance.name }}"
         state: available
@@ -113,7 +113,7 @@
         vsi: "{{ vsi_create_output.resource }}"
 
     - name: Configure Floating IP Address
-      when: (fip is undefined) or (fip == None) or (cache_vsi is false)
+      when: (fip is undefined) or (fip == None) or (not cache_vsi)
       ibm_is_floating_ip:
         name: "{{ name_prefix }}-fip"
         state: available

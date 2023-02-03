@@ -1,0 +1,4 @@
+ibmcloud_api_key = "Your IBM Cloud API key"
+region="us-east" # Options are eu-gb, jp-tok, br-sao, ca-tor, us-east
+
+# Any other variable you want to set (see variables.tf)
