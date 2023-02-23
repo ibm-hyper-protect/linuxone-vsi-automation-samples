@@ -2,7 +2,7 @@ terraform {
   required_providers {
     hpcr = {
       source  = "ibm-hyper-protect/hpcr"
-      version = ">= 0.1.1"
+      version = ">= 0.1.4"
     }
 
     tls = {
@@ -116,16 +116,15 @@ resource "ibm_is_ssh_key" "hello_world_sshkey" {
   tags       = local.tags
 }
 
-# locate the latest hyper protect image
+# locate all public image
 data "ibm_is_images" "hyper_protect_images" {
   visibility = "public"
   status     = "available"
-
 }
 
-locals {
-  # filter the available images down to the hyper protect one
-  hyper_protect_image = [for each in data.ibm_is_images.hyper_protect_images.images : each if each.os == "hyper-protect-1-0-s390x" && each.architecture == "s390x"][0]
+# locate the latest hyper protect image
+data "hpcr_image" "hyper_protect_image" {
+  images = jsonencode(data.ibm_is_images.hyper_protect_images.images)
 }
 
 # In this step we encrypt the fields of the contract and sign the env and workload field. The certificate to execute the 
@@ -138,7 +137,7 @@ resource "hpcr_contract_encrypted" "contract" {
 # construct the VSI
 resource "ibm_is_instance" "hello_world_vsi" {
   name    = format("%s-vsi", var.prefix)
-  image   = local.hyper_protect_image.id
+  image   = data.hpcr_image.hyper_protect_image.image
   profile = var.profile
   keys    = [ibm_is_ssh_key.hello_world_sshkey.id]
   vpc     = ibm_is_vpc.hello_world_vpc.id

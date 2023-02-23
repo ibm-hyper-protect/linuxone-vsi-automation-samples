@@ -1,26 +1,26 @@
 variable "ibmcloud_api_key" {
   description = "Enter your IBM Cloud API Key, you can get your IBM Cloud API key using: https://cloud.ibm.com/iam#/apikeys"
-  default = "********"
+  default     = "********"
 }
 variable "region" {
   type        = string
   description = "Region to deploy to, e.g. eu-gb."
-  default = "us-south"
+  default     = "us-south"
 }
 variable "zone" {
   type        = string
   description = "Zone to deploy to, e.g. 2."
-  default = "2"
+  default     = "2"
 }
 variable "logdna_ingestion_key" {
   type        = string
   description = "Ingestion key for IBM Log Analysis instance. This can be obtained from 'Linux/Ubuntu' section of 'Logging resource' tab of IBM Log Analysis instance"
-  default = "******"
+  default     = "******"
 }
 variable "logdna_ingestion_hostname" {
   type        = string
   description = "rsyslog endpoint of IBM Log Analysis instance. Don't include the port. Example: syslog-a.<region>.logging.cloud.ibm.com"
-  default = "syslog-***.logging.cloud.ibm.com"
+  default     = "syslog-***.logging.cloud.ibm.com"
 }
 variable "prefix" {
   type        = string

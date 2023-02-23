@@ -9,11 +9,11 @@ variable "region" {
   type        = string
   description = "Region to deploy to, e.g. eu-gb"
 
-   validation {
-    condition     = ( var.region == "eu-gb"  ||
-                      var.region == "br-sao" ||
-                      var.region == "ca-tor" ||
-                      var.region == "jp-tok" )
+  validation {
+    condition = (var.region == "eu-gb" ||
+      var.region == "br-sao" ||
+      var.region == "ca-tor" ||
+    var.region == "jp-tok")
     error_message = "Value of region must be one of eu-gb/br-sao/ca-tor/jp-tok."
   }
 }
