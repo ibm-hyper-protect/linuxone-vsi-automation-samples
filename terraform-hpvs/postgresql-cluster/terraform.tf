@@ -193,7 +193,7 @@ resource "ibm_is_subnet" "postgres_subnet_slave_1" {
 # construct the VSI
 resource "ibm_is_instance" "postgres_vsi_slave_1" {
   name      = format("%s-slave-vsi-%s", var.prefix, var.zone_slave_1)
-  image     = local.hyper_protect_image.id
+  image     = data.hpcr_image.hyper_protect_image.image
   profile   = var.profile
   keys      = ["${ibm_is_ssh_key.postgres_sshkey.id}"]
   vpc       = ibm_is_vpc.postgres_vpc.id
@@ -225,7 +225,7 @@ resource "ibm_is_subnet" "postgres_subnet_slave_2" {
 }
 resource "ibm_is_instance" "postgres_vsi_slave_2" {
   name      = format("%s-slave-vsi-%s", var.prefix, var.zone_slave_2)
-  image     = local.hyper_protect_image.id
+  image     = data.hpcr_image.hyper_protect_image.image
   profile   = var.profile
   keys      = ["${ibm_is_ssh_key.postgres_sshkey.id}"]
   vpc       = ibm_is_vpc.postgres_vpc.id
