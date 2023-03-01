@@ -2,7 +2,7 @@ terraform {
   required_providers {
     hpcr = {
       source  = "ibm-hyper-protect/hpcr"
-      version = ">= 0.1.1"
+      version = ">= 0.1.4"
     }
 
     tls = {
@@ -62,7 +62,7 @@ resource "ibm_is_security_group_rule" "mongodb_inbound" {
 
 # The subnet
 resource "ibm_is_subnet" "mongodb_subnet" {
-  for_each = toset(["1", "2", "3"])
+  for_each                 = toset(["1", "2", "3"])
   name                     = format("%s-subnet-%s", var.prefix, each.key)
   vpc                      = ibm_is_vpc.mongodb_vpc.id
   total_ipv4_address_count = 256
@@ -89,9 +89,9 @@ locals {
         }
       },
       "env" : {
-          "MONGO_INITDB_ROOT_USERNAME" : var.mongo_user,
-          "MONGO_INITDB_ROOT_PASSWORD" : var.mongo_password,
-          "MONGO_REPLICA_SET_NAME"     : var.mongo_replica_set_name,
+        "MONGO_INITDB_ROOT_USERNAME" : var.mongo_user,
+        "MONGO_INITDB_ROOT_PASSWORD" : var.mongo_password,
+        "MONGO_REPLICA_SET_NAME" : var.mongo_replica_set_name,
       }
     },
     "workload" : {
@@ -117,16 +117,15 @@ resource "ibm_is_ssh_key" "mongodb_sshkey" {
   tags       = local.tags
 }
 
-# Locate the latest hyper protect image
+# locate all public image
 data "ibm_is_images" "hyper_protect_images" {
   visibility = "public"
   status     = "available"
-
 }
 
-locals {
-  # Filter the available images down to the hyper protect one
-  hyper_protect_image = [for each in data.ibm_is_images.hyper_protect_images.images : each if each.os == "hyper-protect-1-0-s390x" && each.architecture == "s390x"][0]
+# locate the latest hyper protect image
+data "hpcr_image" "hyper_protect_image" {
+  images = jsonencode(data.ibm_is_images.hyper_protect_images.images)
 }
 
 # In this step, we encrypt the fields of the contract and sign the env and workload field.
@@ -140,13 +139,13 @@ resource "hpcr_contract_encrypted" "contract" {
 # Construct the VSI
 resource "ibm_is_instance" "mongodb_vsi" {
   for_each = toset(["1", "2", "3"])
-  name    = format("%s-vsi-%s", var.prefix, each.key)
-  image   = local.hyper_protect_image.id
-  profile = var.profile
-  keys    = [ibm_is_ssh_key.mongodb_sshkey.id]
-  vpc     = ibm_is_vpc.mongodb_vpc.id
-  tags    = local.tags
-  zone    = "${var.region}-${each.key}"
+  name     = format("%s-vsi-%s", var.prefix, each.key)
+  image    = data.hpcr_image.hyper_protect_image.image
+  profile  = var.profile
+  keys     = [ibm_is_ssh_key.mongodb_sshkey.id]
+  vpc      = ibm_is_vpc.mongodb_vpc.id
+  tags     = local.tags
+  zone     = "${var.region}-${each.key}"
 
   # user data field carries the encrypted contract, so all information visible at
   # the hypervisor layer is encrypted
@@ -162,25 +161,25 @@ resource "ibm_is_instance" "mongodb_vsi" {
 # Attach a floating IP since VSI needs to push logs to logDNA server
 resource "ibm_is_floating_ip" "mongodb_floating_ip" {
   for_each = toset(["1", "2", "3"])
-  name   = format("%s-floating-ip-%s", var.prefix,each.key)
-  target = ibm_is_instance.mongodb_vsi[each.key].primary_network_interface[0].id
-  tags   = local.tags
+  name     = format("%s-floating-ip-%s", var.prefix, each.key)
+  target   = ibm_is_instance.mongodb_vsi[each.key].primary_network_interface[0].id
+  tags     = local.tags
 }
 
 # Log the floating IP for convenience
 output "ip_vsi_1" {
-  value = resource.ibm_is_floating_ip.mongodb_floating_ip[1].address
+  value       = resource.ibm_is_floating_ip.mongodb_floating_ip[1].address
   description = "The public IP address of the VSI_1"
 }
 
 # Log the floating IP for convenience
 output "ip_vsi_2" {
-  value = resource.ibm_is_floating_ip.mongodb_floating_ip[2].address
+  value       = resource.ibm_is_floating_ip.mongodb_floating_ip[2].address
   description = "The public IP address of the VSI_2"
 }
 
 # Log the floating IP for convenience
 output "ip_vsi_3" {
-  value = resource.ibm_is_floating_ip.mongodb_floating_ip[3].address
+  value       = resource.ibm_is_floating_ip.mongodb_floating_ip[3].address
   description = "The public IP address of the VSI_3"
 }

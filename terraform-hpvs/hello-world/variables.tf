@@ -3,19 +3,19 @@ variable "ibmcloud_api_key" {
                   Enter your IBM Cloud API Key, you can get your IBM Cloud API key using:
                    https://cloud.ibm.com/iam#/apikeys
                 DESC
-  sensitive  = true
+  sensitive   = true
 }
 
 variable "region" {
   type        = string
   description = "Region to deploy to, e.g. eu-gb"
 
-   validation {
-    condition     = ( var.region == "eu-gb"  ||
-                      var.region == "br-sao" ||
-                      var.region == "ca-tor" ||
-                      var.region == "jp-tok" ||
-                      var.region == "us-east" )
+  validation {
+    condition = (var.region == "eu-gb" ||
+      var.region == "br-sao" ||
+      var.region == "ca-tor" ||
+      var.region == "jp-tok" ||
+    var.region == "us-east")
     error_message = "Value of region must be one of eu-gb/br-sao/ca-tor/jp-tok/us-east."
   }
 }
@@ -26,9 +26,9 @@ variable "zone" {
   description = "Zone to deploy to, e.g. 2."
 
   validation {
-    condition     = ( var.zone == "1" ||
-                      var.zone == "2" ||
-                      var.zone == "3")
+    condition = (var.zone == "1" ||
+      var.zone == "2" ||
+    var.zone == "3")
     error_message = "Value of zone must be one of 1/2/3."
   }
 }
