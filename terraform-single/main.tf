@@ -6,7 +6,7 @@ resource "ibm_is_vpc" "testacc_vpc" {
 # ssh key
 resource "ibm_is_ssh_key" "testacc_sshkey" {
   name       = var.ssh_public_key_name
-  public_key = file(var.ssh_public_key)
+  public_key = var.ssh_public_key
 }
 
 # taras ssh key

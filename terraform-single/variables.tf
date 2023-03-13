@@ -18,7 +18,6 @@ variable "ssh_public_key_name" {
 }
 
 variable "ssh_public_key" {
-  default = "~/.ssh/id_rsa.pub"
 }
 
 variable "subnetwork_name" {
