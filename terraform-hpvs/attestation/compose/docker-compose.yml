@@ -1,0 +1,7 @@
+version: '3.0'
+services:
+  busybox:
+    image: ${REGISTRY}/hpse-docker-busybox-s390x@sha256:7c614f38d6b804230d41c39ce1b9c9254ad2012bf3ed041822c1b05f5f62a916
+    command: sh -c "tar cvzf - -C /var/hyperprotect/ . | base64 -w0"
+    volumes:
+      - /var/hyperprotect/:/var/hyperprotect/:ro
