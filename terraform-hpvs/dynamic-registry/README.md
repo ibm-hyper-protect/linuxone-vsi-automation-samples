@@ -30,6 +30,8 @@ There exist usecases in which the registry is **not know** when the workload sec
 
 In such a case it is possible to dynamically override the registry as well as the pull credentials. This is an coordinated effort between the workload provider and the deployer.
 
+**Note:** the templating approach only works for a [compose](https://pages.github.ibm.com/ZaaS/hpse-contract-schema/#allOf_i1_workload_compose) based workload and also only for images referenced via a digest (i.e. no support for DCT based workloads)
+
 #### Workload Provider
 
 The workload provider marks the registry as dynamic by using a replacement variable in the docker compose file:

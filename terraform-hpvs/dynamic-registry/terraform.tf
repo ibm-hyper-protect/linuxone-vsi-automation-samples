@@ -92,14 +92,14 @@ locals {
           "hostname" : var.logdna_ingestion_hostname,
         }
       },
-      "auths": {
-        (var.registry): {
-          "username": var.pull_username,
-          "password": var.pull_password
+      "auths" : {
+        (var.registry) : {
+          "username" : var.pull_username,
+          "password" : var.pull_password
         }
       },
-      "env": {
-        "REGISTRY": var.registry
+      "env" : {
+        "REGISTRY" : var.registry
       }
     },
     "workload" : {
@@ -141,13 +141,13 @@ data "hpcr_image" "hyper_protect_image" {
 # We use a temporary, random keypair to execute the signature. This could also be overriden. 
 resource "hpcr_contract_encrypted" "contract" {
   contract = local.contract
-  cert = file(var.certificate)
+  cert     = file(var.certificate)
 }
 
 # construct the VSI
 resource "ibm_is_instance" "dynamic_registry_vsi" {
   name    = format("%s-vsi", var.prefix)
-  image   = "r134-2ea62a68-c992-4435-a4ea-0eb93082f6d0" # data.hpcr_image.hyper_protect_image.image
+  image   = data.hpcr_image.hyper_protect_image.image
   profile = var.profile
   keys    = [ibm_is_ssh_key.dynamic_registry_sshkey.id]
   vpc     = ibm_is_vpc.dynamic_registry_vpc.id

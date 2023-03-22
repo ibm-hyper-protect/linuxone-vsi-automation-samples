@@ -6,3 +6,7 @@ logdna_ingestion_hostname="rsyslog endpoint of IBM Log Analysis instance"
 # Example: "syslog-a.<log_region>.logging.cloud.ibm.com". Where <log_region> is
 # the region on which IBM Log Analysis is deployed
 # Any other variable you want to set (see variables.tf)
+registry="Prefix for the dynamic registry" # e.g. docker.io/library
+pull_username="Username for registry" # Username with read access to the container registry
+pull_password="Password for registry" # Password with read access to the container registry
+
