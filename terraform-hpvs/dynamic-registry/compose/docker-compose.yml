@@ -1,0 +1,4 @@
+services:
+  helloworld:
+    image: ${REGISTRY}/hpse-docker-hello-world-s390x@sha256:43c500c5f85fc450060b804851992314778e35cadff03cb63042f593687b7347
+    
