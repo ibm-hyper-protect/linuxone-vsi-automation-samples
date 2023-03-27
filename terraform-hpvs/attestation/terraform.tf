@@ -15,6 +15,11 @@ terraform {
       version = ">= 3.4.3"
     }
 
+    time = {
+      source  = "hashicorp/time"
+      version = ">= 0.9.1"
+    }
+
     ibm = {
       source  = "IBM-Cloud/ibm"
       version = ">= 1.37.1"
@@ -110,7 +115,8 @@ resource "hpcr_tgz" "contract" {
 
 locals {
   # URL to the attestation object
-  attestationURL = format("https://%s/%s/%s.gz", ibm_cos_bucket.attestation_cos_bucket.s3_endpoint_public, urlencode(ibm_cos_bucket.attestation_cos_bucket.bucket_name), urlencode(random_uuid.attestation_uuid.result))
+  attestationKey = format("%s.enc", random_uuid.attestation_uuid.result)
+  attestationURL = format("https://%s/%s/%s", ibm_cos_bucket.attestation_cos_bucket.s3_endpoint_public, urlencode(ibm_cos_bucket.attestation_cos_bucket.bucket_name), urlencode(local.attestationKey))
   # contract in clear text
   contract = yamlencode({
     "env" : {
@@ -121,24 +127,15 @@ locals {
           "hostname" : var.logdna_ingestion_hostname,
         }
       },
-      "env": {
-        "AUTHORIZATION": data.ibm_iam_auth_token.attestation_auth_token.iam_access_token,
-        "S3_URL": local.attestationURL
+      "env" : {
+        "AUTHORIZATION" : data.ibm_iam_auth_token.attestation_auth_token.iam_access_token,
+        "S3_URL" : local.attestationURL
       }
     },
     "workload" : {
       "type" : "workload",
       "compose" : {
         "archive" : hpcr_tgz.contract.rendered
-      },
-      "auths" : {
-        (var.registry) : {
-          "username" : var.pull_username,
-          "password" : var.pull_password
-        }
-      },
-      "env" : {
-        "REGISTRY" : var.registry
       }
     },
     "attestationPublicKey" : tls_private_key.attestation_enc_rsa_key.public_key_pem
@@ -204,6 +201,31 @@ resource "ibm_is_instance" "attestation_vsi" {
 
 }
 
+
+# huhh, this is not nice
+resource "time_sleep" "wait_for_attestation" {
+  depends_on = [
+    ibm_is_instance.attestation_vsi    
+  ]
+
+  create_duration = "45s"
+}
+
+data "ibm_cos_bucket_object" "attestation_record" {
+  bucket_crn      = ibm_cos_bucket.attestation_cos_bucket.crn
+  bucket_location = ibm_cos_bucket.attestation_cos_bucket.region_location
+  key             = local.attestationKey
+  endpoint_type   = "public"
+  depends_on = [
+    time_sleep.wait_for_attestation
+  ]
+}
+
+data "hpcr_attestation" "attestation_decoded" {
+  attestation = data.ibm_cos_bucket_object.attestation_record.body
+  privkey = tls_private_key.attestation_enc_rsa_key.private_key_pem  
+}
+
 resource "local_file" "contract" {
   content  = hpcr_contract_encrypted.contract.rendered
   filename = "${path.module}/build/contract.yml"
@@ -219,17 +241,7 @@ resource "local_file" "attestation_priv_key" {
   filename = "${path.module}/build/attestation"
 }
 
-resource "local_file" "cos_instance" {
-  content  = data.ibm_resource_instance.attestation_cos_instance.crn
-  filename = "${path.module}/build/cos_instance.txt"
-}
-
-resource "local_file" "auth_token" {
-  content  = data.ibm_iam_auth_token.attestation_auth_token.iam_access_token
-  filename = "${path.module}/build/auth_token.txt"
-}
-
-resource "local_file" "bucket" {
-  content  = local.attestationURL
-  filename = "${path.module}/build/s3.txt"
+resource "local_file" "attestation_record" {
+  content  = jsonencode(data.hpcr_attestation.attestation_decoded.checksums)
+  filename = "${path.module}/build/se-checksums.json"
 }

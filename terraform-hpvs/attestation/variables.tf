@@ -67,24 +67,3 @@ variable "profile" {
                   profile in the format Xz2e-YxZ, e.g. bz2e-1x4
                 DESC
 }
-
-variable "registry" {
-  type        = string
-  description = <<-DESC
-                  Prefix of the container registry used to pull the image
-                DESC
-}
-
-variable "pull_username" {
-  type        = string
-  description = <<-DESC
-                  Username to pull from the above registry
-                DESC
-}
-
-variable "pull_password" {
-  type        = string
-  description = <<-DESC
-                  Password to pull from the above registry
-                DESC
-}

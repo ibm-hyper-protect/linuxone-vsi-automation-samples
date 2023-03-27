@@ -1,8 +1,9 @@
 version: '3.0'
 services:
   busybox:
-    image: ${REGISTRY}/hpse-docker-busybox-s390x@sha256:7c614f38d6b804230d41c39ce1b9c9254ad2012bf3ed041822c1b05f5f62a916
-    command: sh -c "printenv && tar cvzf - -C /var/hyperprotect/ . | base64"
+    image: registry.access.redhat.com/ubi8/ubi@sha256:e721f98a49e731f0bd64f8e89c229e1dbb38c46265d92849b3e0bedaf5f81139
+    command: |
+      curl -v -X "PUT" "${S3_URL}" -H "Authorization: ${AUTHORIZATION}"  -H "Content-Type: text/plain"  -d @/var/hyperprotect/se-checksums.txt.enc
     volumes:
       - /var/hyperprotect/:/var/hyperprotect/:ro
     environment:
