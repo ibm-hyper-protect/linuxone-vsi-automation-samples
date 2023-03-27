@@ -9,6 +9,10 @@ terraform {
       source  = "IBM-Cloud/ibm"
       version = ">= 1.37.1"
     }
+    hpcr = {
+      source  = "ibm-hyper-protect/hpcr"
+      version = ">= 0.1.4"
+    }
   }
 }
 
