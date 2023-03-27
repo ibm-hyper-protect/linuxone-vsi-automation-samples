@@ -2,12 +2,17 @@ terraform {
   required_providers {
     hpcr = {
       source  = "ibm-hyper-protect/hpcr"
-      version = ">= 0.1.4"
+      version = ">= 0.1.6"
     }
 
     tls = {
       source  = "hashicorp/tls"
       version = ">= 4.0.1"
+    }
+
+    random = {
+      source  = "hashicorp/random"
+      version = ">= 3.4.3"
     }
 
     ibm = {
@@ -23,6 +28,9 @@ provider "ibm" {
   zone   = "${var.region}-${var.zone}"
 }
 
+resource "random_uuid" "attestation_uuid" {
+}
+
 locals {
   # some reusable tags that identify the resources created by his sample
   tags = ["hpcr", "sample", var.prefix]
@@ -32,6 +40,25 @@ locals {
 resource "ibm_is_vpc" "attestation_vpc" {
   name = format("%s-vpc", var.prefix)
   tags = local.tags
+}
+
+# locate the COS instance
+data "ibm_resource_instance" "attestation_cos_instance" {
+  name     = "secure-execution"
+  location = "global"
+  service  = "cloud-object-storage"
+}
+
+# create a bucket we use to upload the attestation record
+resource "ibm_cos_bucket" "attestation_cos_bucket" {
+  resource_instance_id = data.ibm_resource_instance.attestation_cos_instance.id
+  bucket_name          = format("%s-bucket", var.prefix)
+  region_location      = var.region
+  storage_class        = "standard"
+}
+
+# get the authentication token we use to upload the attestation record
+data "ibm_iam_auth_token" "attestation_auth_token" {
 }
 
 # the security group
@@ -82,6 +109,8 @@ resource "hpcr_tgz" "contract" {
 }
 
 locals {
+  # URL to the attestation object
+  attestationURL = format("https://%s/%s/%s.gz", ibm_cos_bucket.attestation_cos_bucket.s3_endpoint_public, urlencode(ibm_cos_bucket.attestation_cos_bucket.bucket_name), urlencode(random_uuid.attestation_uuid.result))
   # contract in clear text
   contract = yamlencode({
     "env" : {
@@ -91,6 +120,10 @@ locals {
           "ingestionKey" : var.logdna_ingestion_key,
           "hostname" : var.logdna_ingestion_hostname,
         }
+      },
+      "env": {
+        "AUTHORIZATION": data.ibm_iam_auth_token.attestation_auth_token.iam_access_token,
+        "S3_URL": local.attestationURL
       }
     },
     "workload" : {
@@ -108,7 +141,7 @@ locals {
         "REGISTRY" : var.registry
       }
     },
-    "attestationPublicKey": tls_private_key.attestation_enc_rsa_key.public_key_pem
+    "attestationPublicKey" : tls_private_key.attestation_enc_rsa_key.public_key_pem
   })
 }
 
@@ -184,4 +217,19 @@ resource "local_file" "attestation_pub_key" {
 resource "local_file" "attestation_priv_key" {
   content  = tls_private_key.attestation_enc_rsa_key.private_key_pem_pkcs8
   filename = "${path.module}/build/attestation"
+}
+
+resource "local_file" "cos_instance" {
+  content  = data.ibm_resource_instance.attestation_cos_instance.crn
+  filename = "${path.module}/build/cos_instance.txt"
+}
+
+resource "local_file" "auth_token" {
+  content  = data.ibm_iam_auth_token.attestation_auth_token.iam_access_token
+  filename = "${path.module}/build/auth_token.txt"
+}
+
+resource "local_file" "bucket" {
+  content  = local.attestationURL
+  filename = "${path.module}/build/s3.txt"
 }
