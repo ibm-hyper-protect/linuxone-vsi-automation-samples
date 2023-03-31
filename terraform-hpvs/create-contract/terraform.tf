@@ -15,7 +15,7 @@ resource "hpcr_tgz" "contract" {
 
 locals {
   # contract in clear text
-  contract = yamlencode({
+ contract = yamlencode({
     "env" : {
       "type" : "env",
       "logging" : {
@@ -23,6 +23,15 @@ locals {
           "ingestionKey" : var.logdna_ingestion_key,
           "hostname" : var.logdna_ingestion_hostname,
         }
+      },
+      "auths" : {
+        (var.registry) : {
+          "username" : var.pull_username,
+          "password" : var.pull_password
+        }
+      },
+      "env" : {
+        "REGISTRY" : var.registry
       }
     },
     "workload" : {
