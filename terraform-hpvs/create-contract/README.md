@@ -22,6 +22,9 @@ Set the following environment variables:
 ```text
 TF_VAR_logdna_ingestion_key=
 TF_VAR_logdna_ingestion_hostname=
+TF_VAR_registry=
+TF_VAR_pull_username=
+TF_VAR_pull_password=
 ```
 
 ### Run the Example
