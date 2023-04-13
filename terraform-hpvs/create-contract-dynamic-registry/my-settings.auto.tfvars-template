@@ -1,0 +1,6 @@
+logdna_ingestion_key="Your LogDNA ingestion key".
+logdna_ingestion_hostname="rsyslog endpoint of IBM Log Analysis instance"   # Example: "syslog-a.<log_region>.logging.cloud.ibm.com".
+registry="Prefix for the dynamic registry" # e.g. docker.io/library or us.icr.io
+pull_username="Username for registry" # Username with read access to the container registry
+pull_password="Password for registry" # Password with read access to the container registry
+
