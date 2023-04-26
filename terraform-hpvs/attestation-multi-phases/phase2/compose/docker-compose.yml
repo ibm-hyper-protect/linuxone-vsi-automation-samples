@@ -1,0 +1,8 @@
+services:
+  paynow:
+    image: ghcr.io/ibm-hyper-protect/paynow-website@sha256:85765a17f14914f4d3223d75a84a3680de8e1b6a48d56f3363d68b02c93246f4
+    ports:
+      - "8080:8080"
+      - "8443:8443"
+    volumes:
+      - /var/hyperprotect/:/var/hyperprotect/:ro
