@@ -11,11 +11,11 @@ name_prefix: "{{ os_type }}-ansible"
 # - Regular expression for the VSI image name
 #    Note: If multiple matches are found the first one is taken
 instance-zlinux:
-  name: zlinux-vsi
+  name: "{{ name_prefix }}-zlinux-vsi"
   profile: bz2-2x8
   image: .*ubuntu-18-04.*s390x.*
 instance-zos:
-  name: "zos-vsi"
+  name: "{{ name_prefix }}-zos-vsi"
   profile: mz2-2x16
   image: .*zos.*
   username: IBMUSER
@@ -44,3 +44,6 @@ zone: "{{region}}-1"
 # If cache_vsi=True then VSI creation will only be attempted if not cached
 #cache_vsi: True
 cache_vsi: False
+
+# The resource group ID to be used under the IBM Cloud Account
+resource_group: "8d923eb7bb0a450baa9bafb46aba797e"

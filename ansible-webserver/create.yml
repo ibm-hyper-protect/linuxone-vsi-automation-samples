@@ -24,6 +24,7 @@
         name: "{{ name_prefix }}-vpc"
         state: available
         id: "{{ vpc.id | default(omit) }}"
+        resource_group: "{{ resource_group }}"
       register: vpc_create_output
 
     - name: Configure Security Group Rule to open SSH and web server on the VSI
@@ -56,6 +57,7 @@
         vpc: "{{ vpc.id }}"
         total_ipv4_address_count: "{{ total_ipv4_address_count }}"
         zone: "{{ zone }}"
+        resource_group: "{{ resource_group }}"
       register: subnet_create_output
 
     - name: Save VPC Subnet as fact
@@ -70,6 +72,7 @@
         name: "{{ ssh_key_name }}"
         public_key: "{{ ssh_public_key }}"
         id: "{{ ssh_key.id | default(omit) }}"
+        resource_group: "{{ resource_group }}"
       register: ssh_key_create_output
 
     - name: Save SSH Key as fact
@@ -78,17 +81,29 @@
         cacheable: True
         ssh_key: "{{ ssh_key_create_output.resource }}"
 
-    - name: Retrieve image list
-      when: image_dict is undefined
-      ibm_is_images_info:
-      register: images_list
+    ## FIXME - ibm_is_images_info doesn't return anything! 
+    #
+    #
+    # - name: Retrieve image list
+    #   # when: image_dict is undefined
+    #   ibm_is_images_info:
+    #     # resource_group: "{{ resource_group }}"
+    #   register: images_list
 
-    - name: Set VM image name/id dictionary fact
-      when: image_dict is undefined
-      set_fact:
-        cacheable: True
-        image_dict: "{{ images_list.resource.images |
-                        items2dict(key_name='name', value_name='id') }}"
+    # - name: show image_dict
+    #   debug:
+    #     var: images_list
+
+    # - name: Set VM image name/id dictionary fact
+    #   when: image_dict is undefined
+    #   set_fact:
+    #     cacheable: True
+    #     image_dict: "{{ images_list.resource.images |
+    #                     items2dict(key_name='name', value_name='id') }}"
+    
+    # - name: show image_dict
+    #   debug:
+    #     var: image_dict
 
     - name: Create VSI
       when: (vsi is undefined) or (vsi == None) or (not cache_vsi)
@@ -98,12 +113,14 @@
         id: "{{ vsi.id | default(omit) }}"
         vpc: "{{ vpc.id }}"
         profile: "{{ instance.profile }}"
-        image: "{{ (image_dict|dict2items|selectattr('key', 'match', instance.image)|list|last).value }}"
+        # image: "{{ (image_dict|dict2items|selectattr('key', 'match', instance.image)|list|last).value }}"
+        image: r018-6d668004-2cdf-47ee-8efe-abbe8b8b578a
         keys:
           - "{{ ssh_key.id }}"
         primary_network_interface:
           - subnet: "{{ subnet.id }}"
         zone: "{{ zone }}"
+        resource_group: "{{ resource_group }}"
       register: vsi_create_output
 
     - name: Save VSI as fact
@@ -119,6 +136,7 @@
         state: available
         id: "{{ fip.id | default(omit) }}"
         target: "{{ vsi.primary_network_interface[0]['id'] }}"
+        resource_group: "{{ resource_group }}"
       register: fip_create_output
 
     - name: Save Floating IP as fact
@@ -155,7 +173,7 @@
       register: sysinfo
 
     - name: Print OS information
-      when: sysinfo is defined
+      when: sysinfo.stdout_lines is defined
       debug:
         var: sysinfo.stdout_lines
 
