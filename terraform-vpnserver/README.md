@@ -1,8 +1,7 @@
 # Deploys a VPN Server with Terraform
 
 This is a sample Terraform configuration for generating a client-to-site VPN server on IBM Cloud. This creates a single subnetwork VPC
-and deploys a client-to-site VPN server into it. This configuration produces certificates for use by the VPN server and client and stores them in an IBM Cloud Secrets Manager instance (free plan). It does not establish separate, by userid, login credentials, so anyone with the resulting certificate file will be able to
-establish a VPN to the environment. Thanks to now archived [Helpers for Secrets Manager](https://github.com/we-work-in-the-cloud/terraform-ibm-secrets-manager) for samples on how to import certificates. Once the IBM Terraform provider has been enriched to import certificates directly, it should be used instead of this project.
+and deploys a client-to-site VPN server into it. This configuration produces certificates for use by the VPN server and client and stores them in an IBM Cloud Secrets Manager instance (free plan). It does not establish separate, by userid, login credentials, so anyone with the resulting certificate file will be able to establish a VPN to the environment.
 
 ## Preparations
 
@@ -22,10 +21,7 @@ establish a VPN to the environment. Thanks to now archived [Helpers for Secrets 
 
 ## Create
 
-You must run the create in two phases as the URL of the Secrets Manager must be set once the resource is created and cannot be determined beforehand.
-
-1. `terraform apply -target=module.phase1`
-2. `terraform apply`
+1. `terraform apply`
 
 ## Destroy
 
