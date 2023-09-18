@@ -1,27 +1,3 @@
-
-
-resource "ibm_resource_instance" "secrets_mgr" {
-  name     = var.secrets_manager_name
-  location = var.region
-  plan     = "trial"
-  service  = "secrets-manager"
-}
-
-# Create a VPC
-resource "ibm_is_vpc" "vpc" {
-  name = var.vpc
-}
-
-
-variable "availability_zone_address_prefixes" {
-  type = list(
-    string
-  )
-  default = [
-    "10.241.0.0/18", "10.241.64.0/18", "10.241.128.0/18" 
-  ]
-}
-
 locals{
     full_zone = "${var.region}-${var.zone}"
     full_vpnclient_cert_common_name = "${var.region} ${var.vpnclient_cert_common_name}"
@@ -32,6 +8,22 @@ locals{
     vpn_protocol = "udp"
 }
 
+
+## Part 1 
+##
+## Create a Secrets Manager on IBM Cloud. Generate a CA certificate and have it issue
+## 2 certificates, one for the VPN server and one for the VPN client. Finally import
+## all the certificates into the Secrets Manager.
+
+# Create the Secrets Manager 
+resource "ibm_resource_instance" "secrets_mgr" {
+  name     = var.secrets_manager_name
+  location = var.region
+  plan     = "trial"
+  service  = "secrets-manager"
+}
+
+# Create a group within the Secrets Manager 
 resource "ibm_sm_secret_group" "sm_secret_group"{
   instance_id   = ibm_resource_instance.secrets_mgr.guid
   region        = var.region
@@ -121,6 +113,7 @@ resource "tls_locally_signed_cert" "vpnclient_cert" {
   ]
 }
 
+# Import the CA certificate 
 resource "ibm_sm_imported_certificate" "vpn_ca_cert" {
   instance_id   = ibm_resource_instance.secrets_mgr.guid
   region        = var.region
@@ -132,6 +125,7 @@ resource "ibm_sm_imported_certificate" "vpn_ca_cert" {
   intermediate = null
 }
 
+# Import the VPN Server certificate
 resource "ibm_sm_imported_certificate" "vpnserver_cert" {
   instance_id   = ibm_resource_instance.secrets_mgr.guid
   region        = var.region
@@ -143,7 +137,7 @@ resource "ibm_sm_imported_certificate" "vpnserver_cert" {
   intermediate = tls_self_signed_cert.ca_cert.cert_pem
 }
 
-
+# Import the VPN Client certificate
 resource "ibm_sm_imported_certificate" "vpnclient_cert" {
   instance_id   = ibm_resource_instance.secrets_mgr.guid
   region        = var.region
@@ -153,6 +147,18 @@ resource "ibm_sm_imported_certificate" "vpnclient_cert" {
   certificate  = tls_locally_signed_cert.vpnclient_cert.cert_pem
   private_key  = tls_private_key.vpnclient_private_key.private_key_pem
   intermediate = tls_self_signed_cert.ca_cert.cert_pem
+}
+
+## Part 2 
+##
+## Create a VPC and single subnet on IBM Cloud. Create a Security Group that
+## manages the VPN port. Create a VPN Server, using the certificates
+## created in Part 1 as the authentication mechanism. Finally create an OpenVPN
+## client configuration file that could be used to connect to the VPN server.
+
+# Create a VPC
+resource "ibm_is_vpc" "vpc" {
+  name = var.vpc
 }
 
 # subnetwork
@@ -180,6 +186,9 @@ resource "ibm_is_security_group_rule" "vpnserver_security_group_rule_vpn" {
   }
 }
 
+# Create a VPN server. Use the certificates created in Part 1 for authentication. Note that we
+# only are using certificates for client authentication. Associate both the default security
+# group and the created security group to the VPN server.
 resource "ibm_is_vpn_server" "vpn_server" {
   certificate_crn = ibm_sm_imported_certificate.vpnserver_cert.crn
   client_authentication {
@@ -195,13 +204,14 @@ resource "ibm_is_vpn_server" "vpn_server" {
   security_groups        = [ibm_is_security_group.vpnserver_security_group.id, ibm_is_vpc.vpc.default_security_group]
 }
 
-
+# Add the VPC subnet into the VPN Server routing tables since we setup a split tunnel VPN
 resource "ibm_is_vpn_server_route" "server_routes" {
   vpn_server = ibm_is_vpn_server.vpn_server.id
   destination = ibm_is_subnet.vpc_subnet.ipv4_cidr_block
   action = "translate"
 }
 
+# Create an OpenVPN Connect configuration file that can be used to connect to this VPN
 resource "local_file" "ovpn" {
     filename = "${var.vpc}-${var.region}.ovpn"
     content = "client\ndev tun\nproto ${local.vpn_protocol}\nport ${var.vpn_port}\nremote ${ibm_is_vpn_server.vpn_server.hostname}\nresolv-retry infinite\nremote-cert-tls server\nnobind\n\nauth SHA256\ncipher AES-256-GCM\nverb 3\nreneg-sec 0\n<ca>\n${tls_self_signed_cert.ca_cert.cert_pem}</ca>\n<cert>\n${tls_locally_signed_cert.vpnclient_cert.cert_pem}</cert>\n<key>\n${tls_private_key.vpnclient_private_key.private_key_pem}</key>"
