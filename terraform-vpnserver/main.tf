@@ -1,7 +1,7 @@
 
 
 resource "ibm_resource_instance" "secrets_mgr" {
-  name     = var.cert_service_name
+  name     = var.secrets_manager_name
   location = var.region
   plan     = "trial"
   service  = "secrets-manager"
@@ -35,8 +35,8 @@ locals{
 resource "ibm_sm_secret_group" "sm_secret_group"{
   instance_id   = ibm_resource_instance.secrets_mgr.guid
   region        = var.region
-  name        = "${var.cert_service_name}-secret-group"
-  description = "Secrets group for ${var.cert_service_name}"
+  name        = "${var.secrets_manager_group_name}"
+  description = "Secrets group for ${var.secrets_manager_name}"
 }
 
 
@@ -192,7 +192,7 @@ resource "ibm_is_vpn_server" "vpn_server" {
   port                   = var.vpn_port
   protocol               = local.vpn_protocol
   subnets                = [ibm_is_subnet.vpc_subnet.id]
-  security_groups        = [ibm_is_security_group.vpnserver_security_group.id]
+  security_groups        = [ibm_is_security_group.vpnserver_security_group.id, ibm_is_vpc.vpc.default_security_group]
 }
 
 

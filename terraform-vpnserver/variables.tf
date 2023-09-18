@@ -36,9 +36,14 @@ variable "vpn_port" {
   default = 1194
 }
 
-variable "cert_service_name" {
+variable "secrets_manager_name" {
   type = string
-  default = "SecretsManager-vpnserver"
+  default = "terraform-test-secretsmanager"
+}
+
+variable "secrets_manager_group_name" {
+  type = string
+  default = "terraform-test-secretsmanager-group"
 }
 
 variable "vpnserver_name" {
