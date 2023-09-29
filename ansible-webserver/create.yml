@@ -18,13 +18,23 @@
         cacheable: True
         cache_zone: "{{ zone }}"
 
+    - name: create Resource Group
+      when: resource_group_name is defined
+      ibm_resource_group:
+        name: "{{ resource_group_name }}"
+        state: available
+      register: ibm_resource_group_output
+
+    - fail:
+        msg: "{{ibm_resource_group_output}}"
+
     - name: Create VPC
       when: vpc is undefined
       ibm_is_vpc:
         name: "{{ name_prefix }}-vpc"
         state: available
         id: "{{ vpc.id | default(omit) }}"
-        resource_group: "{{ resource_group }}"
+        resource_group: "{{ ibm_resource_group_output.resource.id | default(omit) }}"
       register: vpc_create_output
 
     - name: Configure Security Group Rule to open SSH and web server on the VSI
@@ -57,7 +67,7 @@
         vpc: "{{ vpc.id }}"
         total_ipv4_address_count: "{{ total_ipv4_address_count }}"
         zone: "{{ zone }}"
-        resource_group: "{{ resource_group }}"
+        resource_group: "{{ vpc.resource_group }}"
       register: subnet_create_output
 
     - name: Save VPC Subnet as fact
@@ -72,7 +82,7 @@
         name: "{{ ssh_key_name }}"
         public_key: "{{ ssh_public_key }}"
         id: "{{ ssh_key.id | default(omit) }}"
-        resource_group: "{{ resource_group }}"
+        resource_group: "{{ vpc.resource_group }}"
       register: ssh_key_create_output
 
     - name: Save SSH Key as fact
@@ -120,7 +130,7 @@
         primary_network_interface:
           - subnet: "{{ subnet.id }}"
         zone: "{{ zone }}"
-        resource_group: "{{ resource_group }}"
+        resource_group: "{{ vpc.resource_group }}"
       register: vsi_create_output
 
     - name: Save VSI as fact
@@ -136,7 +146,7 @@
         state: available
         id: "{{ fip.id | default(omit) }}"
         target: "{{ vsi.primary_network_interface[0]['id'] }}"
-        resource_group: "{{ resource_group }}"
+        resource_group: "{{ vpc.resource_group }}"
       register: fip_create_output
 
     - name: Save Floating IP as fact

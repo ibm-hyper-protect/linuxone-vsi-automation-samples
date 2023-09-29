@@ -45,5 +45,5 @@ zone: "{{region}}-1"
 #cache_vsi: True
 cache_vsi: False
 
-# The resource group ID to be used under the IBM Cloud Account
-resource_group: "8d923eb7bb0a450baa9bafb46aba797e"
+# The resource group to be used under the IBM Cloud Account
+# resource_group_name: "{{ name_prefix }}-resources"
