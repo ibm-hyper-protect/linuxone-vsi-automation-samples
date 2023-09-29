@@ -13,11 +13,11 @@ name_prefix: "{{ os_type }}-ansible"
 instance-zlinux:
   name: "{{ name_prefix }}-zlinux-vsi"
   profile: bz2-2x8
-  image: .*ubuntu-18-04.*s390x.*
+  image: ibm-ubuntu.*s390x.*
 instance-zos:
   name: "{{ name_prefix }}-zos-vsi"
   profile: mz2-2x16
-  image: .*zos.*
+  image: ibm-zos.*
   username: IBMUSER
   python_interpreters:
   - /usr/lpp/IBM/cyp/v3r9/pyz/bin/python3

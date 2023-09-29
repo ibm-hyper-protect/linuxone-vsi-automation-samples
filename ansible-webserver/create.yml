@@ -91,26 +91,18 @@
         cacheable: True
         ssh_key: "{{ ssh_key_create_output.resource }}"
 
-    ## FIXME - ibm_is_images_info doesn't return anything! 
-    #
-    #
-    # - name: Retrieve image list
-    #   # when: image_dict is undefined
-    #   ibm_is_images_info:
-    #     # resource_group: "{{ resource_group }}"
-    #   register: images_list
+    - name: Retrieve image list
+      when: image_dict is undefined
+      ibm_is_images_info:
+      register: images_list
 
-    # - name: show image_dict
-    #   debug:
-    #     var: images_list
+    - name: Set VM image name/id dictionary fact
+      when: image_dict is undefined
+      set_fact:
+        cacheable: True
+        image_dict: "{{ images_list.resource.images |
+                        items2dict(key_name='name', value_name='id') }}"
 
-    # - name: Set VM image name/id dictionary fact
-    #   when: image_dict is undefined
-    #   set_fact:
-    #     cacheable: True
-    #     image_dict: "{{ images_list.resource.images |
-    #                     items2dict(key_name='name', value_name='id') }}"
-    
     # - name: show image_dict
     #   debug:
     #     var: image_dict
@@ -123,8 +115,7 @@
         id: "{{ vsi.id | default(omit) }}"
         vpc: "{{ vpc.id }}"
         profile: "{{ instance.profile }}"
-        # image: "{{ (image_dict|dict2items|selectattr('key', 'match', instance.image)|list|last).value }}"
-        image: r018-6d668004-2cdf-47ee-8efe-abbe8b8b578a
+        image: "{{ (image_dict|dict2items|selectattr('key', 'match', instance.image)|list|first).value }}"
         keys:
           - "{{ ssh_key.id }}"
         primary_network_interface:
