@@ -16,3 +16,4 @@ terraform-hpvs/**/.env
 terraform-hpvs/log-encryption/compose/key.pub
 terraform-vpnserver/*.ovpn
 build
+**/.vscode
