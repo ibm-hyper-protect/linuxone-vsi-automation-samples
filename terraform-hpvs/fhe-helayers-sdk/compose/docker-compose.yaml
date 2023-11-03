@@ -1,0 +1,7 @@
+version: '3'
+services:
+  fileserver:
+    image: icr.io/helayers/helayers-pylab-s390x@sha256:c60a70a480255c854756d3b2ee4bfc292c93cd9ee399f0a7de1454d6bc57664c
+    restart: always
+    ports:
+      - 8888:8888
