@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: daytrader
+spec:
+  containers:
+  - name: daytrader10
+    image: us.icr.io/sample/daytrader@sha256:5f4f20aee41e27858a8ed320faed6c2eb8b62dd4bf3e1737f54575a756c7a5da
+    ports:
+    - containerPort: 9080
+      hostPort: 9080
+      protocol: tcp
