@@ -38,7 +38,7 @@ Define the variables in a template file:
 
 ### Define your workload
 
-Create the file `compose\pod.yml` for your workload. Specify at least the container image digest and use the `${REGISTRY}` variable to reference the container registry defined in your settings, e.g.:
+Create the file `compose\pod.yml` for your workload. Adapt the value for `image` to reference your container registry and your container image including the digest, e.g.:
 
 ```
 apiVersion: v1
