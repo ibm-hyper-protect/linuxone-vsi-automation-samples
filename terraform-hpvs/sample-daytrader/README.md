@@ -1,4 +1,4 @@
-## Contract generation example for the daytrader sample application with pod descriptor and support for dynamic container registry definition
+## Contract generation example for the Daytrader sample application
 
 This sample creates an encrypted and signed contract and stores it locally in a file. You can later use the contract to provision a HPVS for VPC instance.
 The contract will define the container image, the container registry and the credentials for pulling your workload container image.
