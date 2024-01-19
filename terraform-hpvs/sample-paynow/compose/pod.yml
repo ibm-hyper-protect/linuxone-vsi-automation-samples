@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: paynow
+spec:
+  containers:
+  - name: main
+    image: ghcr.io/ibm-hyper-protect/paynow-website@sha256:ddba7d52d058f46b184d67783e8c55999a8d439a1eb11d3d5314cd787a928bc3
+    ports:
+    - containerPort: 8080
+      hostPort: 8080
+      protocol: tcp
+    - containerPort: 8443
+      hostPort: 8443
+      protocol: tcp
+    envFrom:
+    - configMapRef:
+        name: contract.config.map
+        optional: false
+    volumeMounts:
+    - name: hyperprotect
+      mountPath: /var/hyperprotect/
+  restartPolicy: Never
+  volumes:
+  - name: hyperprotect
+    hostPath:
+      path: /var/hyperprotect/
