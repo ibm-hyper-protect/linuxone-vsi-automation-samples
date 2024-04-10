@@ -1,0 +1,15 @@
+logdna_ingestion_key="<logdna-ingestion-key>"
+logdna_ingestion_hostname="<logdna-hostname>"
+
+hpcr_csr_country="<CSR - Country>"
+hpcr_csr_state="<CSR - State>"
+hpcr_csr_location="<CSR - Location>"
+hpcr_csr_org="<CSR - Organisation>"
+hpcr_csr_unit="<CSR - Unit>"
+hpcr_csr_domain="<CSR - Domain>"
+hpcr_csr_mail="<CSR - Mail>"
+
+hpcr_private_key_path="<Private key path>"
+hpcr_contract_expiry_days=<Expiry days>
+hpcr_ca_privatekey_path="<CA private key path>"
+hpcr_cacert_path="<CA certificate path>"
