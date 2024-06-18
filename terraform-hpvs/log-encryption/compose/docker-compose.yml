@@ -1,6 +1,6 @@
 services:
   logging:
-    image: docker.io/library/ubuntu@sha256:20fa2d7bb4de7723f542be5923b06c4d704370f0390e4ae9e1c833c8785644c1
+    image: docker.io/library/ubuntu@sha256:2e863c44b718727c860746568e1d54afd13b2fa71b160f5cd9058fc436217b30
     volumes:
       - ./key.pub:/var/logging/logging.pub:ro
       - ./bin/:/var/logging/bin/:ro
