@@ -1,6 +1,6 @@
 services:
   postgresql:
-    image: docker.io/library/postgres:12@sha256:429c57f9ae8f379601df6df7448b0c2c8df4da23d7ba2cb57fee8da8f262eda0
+    image: docker.io/library/postgres:12@sha256:b4ab2c0e458477d8d36b1fd3616cd1936037b323db39dc2191872b0119717857
     ports:
       - "5432:5432"
     environment:
