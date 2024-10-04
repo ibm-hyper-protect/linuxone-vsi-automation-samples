@@ -1,5 +1,5 @@
 services:
   helloworld:
-    image: docker.io/nginxdemos/hello@sha256:dedfbe85183df66f3fdc99accf53e1b2171908dffd4d6556603ba4810b1fce6e
+    image: docker.io/nginxdemos/hello@sha256:a97d837baef1734cfaa19c24f333bfdf402b78de634b63b7f51c422d0270300e
     ports:
       - "80:80"
