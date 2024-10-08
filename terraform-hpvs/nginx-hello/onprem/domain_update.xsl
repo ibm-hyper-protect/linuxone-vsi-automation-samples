@@ -30,6 +30,8 @@
       <driver name="vhost" iommu="on"/>
     </xsl:copy>
   </xsl:template>
+
+  <xsl:template match="acpi"/>
   
   <xsl:template match="/domain/devices/controller[@type='virtio-serial']"/>
   <xsl:template match="/domain/devices/channel"/>

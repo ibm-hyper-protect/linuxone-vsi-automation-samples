@@ -107,6 +107,12 @@ terraform apply
 
 This will create a secure-execution virtual machine on your on-premise host. If you registered a libvirt hook for port fowarding to your host, you can use the IP address of the host to access the example.
 
+Note: If the `terraform apply` is failing with the following error. Add `<xsl:template match="acpi"/>` to the `domain_update.xsl` file. The `domain_update.xsl` has been updated with this change.
+
+```
+Error: error defining libvirt domain: unsupported configuration: machine type 's390-ccw-virtio-noble' does not support ACPI
+```
+
 #### Test if the example works
 
 Use your browser to access:
