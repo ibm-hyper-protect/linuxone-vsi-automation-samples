@@ -105,9 +105,9 @@ Deploy the example:
 terraform apply
 ```
 
-This will create a secure-execution virtual machine on your on-premise host. If you registered a libvirt hook for port fowarding to your host, you can use the IP address of the host to access the example.
+This will create a secure-execution virtual machine on your on-premise host. If you registered a libvirt hook for port forwarding to your host, you can use the IP address of the host to access the example.
 
-Note: If the `terraform apply` is failing with the following error. Add `<xsl:template match="acpi"/>` to the `domain_update.xsl` file. The `domain_update.xsl` has been updated with this change.
+Note: If the `terraform apply` is failing with the following error. Add `<xsl:template match="acpi"/>` to the `domain_update.xsl` file. The [domain_update.xsl](https://github.com/ibm-hyper-protect/linuxone-vsi-automation-samples/blob/master/terraform-hpvs/nginx-hello/onprem/domain_update.xsl) has been updated with this change. Refer the file for more details.
 
 ```
 Error: error defining libvirt domain: unsupported configuration: machine type 's390-ccw-virtio-noble' does not support ACPI
