@@ -18,8 +18,8 @@ terraform {
 
 module "user_data" {
   source = "../user_data"
-  logdna_ingestion_key        = var.logdna_ingestion_key
-  logdna_ingestion_hostname   = var.logdna_ingestion_hostname
+  icl_hostname        = var.icl_hostname
+  icl_iam_apikey   = var.icl_iam_apikey
 }
 
 # make sure to target the correct region and zone
