@@ -27,16 +27,20 @@ variable "zone_slave_2" {
   default     = "3"
 }
 
-variable "logdna_ingestion_key" {
+variable "icl_hostname" {
   type        = string
-  description = "Ingestion key for IBM Log Analysis instance. This can be obtained from 'Linux/Ubuntu' section of 'Logging resource' tab of IBM Log Analysis instance"
-  default     = "******"
+  sensitive   = true
+  description = <<-DESC
+                  Host of IBM Cloud Logs. This can be
+                  obtained from cloud logs tab under Logging instances
+                DESC
 }
 
-variable "logdna_ingestion_hostname" {
+variable "icl_iam_apikey" {
   type        = string
-  description = "rsyslog endpoint of IBM Log Analysis instance. Don't include the port. Example: syslog-a.<region>.logging.cloud.ibm.com"
-  default     = "syslog-***.logging.cloud.ibm.com"
+  description = <<-DESC
+                  This can be obtained from Access(IAM) under Manage
+                DESC
 }
 
 variable "prefix" {

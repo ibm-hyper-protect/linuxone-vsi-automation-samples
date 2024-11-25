@@ -88,10 +88,9 @@ locals {
     "env" : {
       "type" : "env",
       "logging" : {
-        "logDNA" : {
-          "hostname" : var.logdna_ingestion_hostname,
-          "ingestionKey" : var.logdna_ingestion_key,
-          "port" : 6514,
+        "logRouter" : {
+          "hostname" : var.icl_hostname,
+          "iamApiKey" : var.icl_iam_apikey,
         }
       },
     },
@@ -162,10 +161,9 @@ locals {
     "env" : {
       "type" : "env",
       "logging" : {
-        "logDNA" : {
-          "hostname" : var.logdna_ingestion_hostname,
-          "ingestionKey" : var.logdna_ingestion_key,
-          "port" : 6514,
+        "logRouter" : {
+          "hostname" : var.icl_hostname,
+          "iamApiKey" : var.icl_iam_apikey,
         }
       },
     },
