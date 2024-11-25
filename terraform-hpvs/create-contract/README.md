@@ -4,7 +4,7 @@ This sample creates an encrypted and signed contract and stores it locally in a 
 
 ### Prerequisite
 
-Prepare your environment according to [these steps](../README.md)
+Prepare your environment according to [these steps](../README.md). Make sure to setup IBM Cloud Logs Instance.
 
 ### Settings
 
@@ -20,8 +20,8 @@ Use one of the following options to set you settings:
 Set the following environment variables:
 
 ```text
-TF_VAR_logdna_ingestion_key=
-TF_VAR_logdna_ingestion_hostname=
+TF_VAR_icl_iam_apikey=
+TF_VAR_icl_hostname=
 ```
 
 ### Run the Example

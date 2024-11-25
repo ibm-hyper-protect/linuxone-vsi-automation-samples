@@ -5,7 +5,7 @@
 1. Make sure to have the [OpenSSL](https://www.openssl.org/) binary installed (see [details](#openssl))
 2. Install the [terraform CLI](https://learn.hashicorp.com/tutorials/terraform/install-cli) for your environment
 3. Follow the description for the [IBM Cloud Provider](https://registry.terraform.io/providers/IBM-Cloud/ibm/latest/docs#authentication) to get your API key
-4. Follow the description for [HPCR](https://cloud.ibm.com/docs/vpc?topic=vpc-about-se#hpcr_setup_logging) to setup a logging instance.
+4. Follow the description for [HPCR](https://cloud.ibm.com/docs/vpc?topic=vpc-logging-for-hyper-protect-virtual-servers-for-vpc) to setup a logging instance.
 5. Set either environment variables or fill the template file according to the example README
 
 ## Examples

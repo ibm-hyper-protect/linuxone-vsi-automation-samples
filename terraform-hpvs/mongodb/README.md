@@ -4,7 +4,7 @@ This sample deploys 3 instances of [mongodb](https://hub.docker.com/r/s390x/mong
 
 ### Prerequisite
 
-Prepare your environment according to [these steps](https://github.com/ibm-hyper-protect/linuxone-vsi-automation-samples/blob/master/terraform-hpvs/README.md)
+Prepare your environment according to [these steps](https://github.com/ibm-hyper-protect/linuxone-vsi-automation-samples/blob/master/terraform-hpvs/README.md). Make sure to setup IBM Cloud Logs Instance.
 
 ### Settings
 
@@ -23,8 +23,8 @@ Set the following environment variables:
 IC_API_KEY=
 TF_VAR_zone=
 TF_VAR_region=
-TF_VAR_logdna_ingestion_key=
-TF_VAR_logdna_ingestion_hostname=
+TF_VAR_icl_iam_apikey=
+TF_VAR_icl_hostname=
 TF_VAR_mongo_user=
 TF_VAR_mongo_password=
 ```

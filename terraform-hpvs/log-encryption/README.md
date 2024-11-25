@@ -30,7 +30,7 @@ FAQ:
 
 ### Prerequisite
 
-Prepare your environment (also refer to the [generic REAME](../README.md) file):
+Prepare your environment (also refer to the [generic REAME](../README.md). Make sure to setup IBM Cloud Logs Instance.
 
 ### Settings
 
@@ -44,8 +44,8 @@ Set the following environment variables:
 IC_API_KEY=
 TF_VAR_zone=
 TF_VAR_region=
-TF_VAR_logdna_ingestion_key=
-TF_VAR_logdna_ingestion_hostname=
+TF_VAR_icl_iam_apikey=
+TF_VAR_icl_hostname=
 TF_VAR_artifactory_user=
 TF_VAR_artifactory_key=
 ```
@@ -64,12 +64,7 @@ Deploy the example:
 terraform apply
 ```
 
-This will create a sample virtual server instance. Monitor your logDNA instance for
-
-```text
-Sep 6 14:35:19 hpcr-customer-encryption-key-logging-vsi compose-logging-1 info unencrypted message
-Sep 6 14:35:19 hpcr-customer-encryption-key-logging-vsi compose-logging-1 info hyper-protect-basic.rdfpSzcyDiR7JIDgL1EiFMMmPlM6e44R916Gq44WiA0Hlwz5Mt3O2vPn66SVXAkRHWWGnTYgyLURRoKCsFs/PWcMzQLDI+M6z5H6DEVv7kAGESEmjiNxNrR3zjXHcoOBNVOgEdrZIUlI7r6eg3yN+iMz50zTm4C1j1raW6n420pr9BVcVlytP2CuAjz+nWhbK5/bkbGfrmUHVad/cduPL/ucyXwS0LQzBVFYvomSu0PqFYAQY6QxGVpmeKuUKChJ+kerIWncX2Qbao09PMZOtq9LBNqq7QxLSRcc6/MrMF2Imi8M/Ho94sRdX04zU86yEklJJhf5FMNL1FplZcE0ekWUOI0nDEo0cu8PwpCDuz9POC9+3fK5mvM1w4GrRbz5DqGb7HZF9Bq5Llw/cu5T63j52B+h9EDkUQ8wUodpcrG1+tPAfioXYLJYXbypVq+VeCrCAS+3iYJgoduQ1tcvKmm53rGL8v5TIda1tzAYXHXitVaaoheXd74P5U/2mxl6FNtOEHhDxCp7ZHMH2omyyf4pUnV+HezsMoX5c7QR9C0FqaHeSOeuLCASXuhe0Ak76RktwdQYl7AuFsT9jCMfnCUxTSSwimknTsN+PjYitaVWLnuvBlE4Q9nY3oQ35zueektWBJpzl2yDObuE07MEK69Ds0b3wPH5dxQLZtywBJw=.U2FsdGVkX18VMC96BdITb/s3ck+e7Z6rjA2HycHvzMnzivGZDMf2xk0kBc+cTEqM
-```
+This will create a sample virtual server instance. Monitor your ICL instance for logs.
 
 Destroy the created resources:
 

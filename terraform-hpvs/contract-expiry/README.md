@@ -5,7 +5,7 @@ the latest version of HPCR in the VPC cloud and then downloads the matching encr
 
 ### Prerequisite
 
-Prepare your environment according to [these steps](../README.md)
+Prepare your environment according to [these steps](../README.md). Make sure to setup IBM Cloud Logs Instance.
 
 ### Settings
 
@@ -39,8 +39,8 @@ Use one of the following options to set your settings:
 Set the following environment variables:
 
 ```text
-TF_VAR_logdna_ingestion_key="<logdna ingestion key>"
-TF_VAR_logdna_ingestion_hostname="<logdna hostname>"
+TF_VAR_icl_iam_apikey="<ICL IAM Key>"
+TF_VAR_icl_hostname="<ICL Hostname>"
 
 TF_VAR_hpcr_csr_country="<CSR - Country>"
 TF_VAR_hpcr_csr_state="<CSR - State>"

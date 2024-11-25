@@ -5,13 +5,13 @@ The contract will define the container registry and the credentials for pulling 
 
 ### Prerequisite
 
-Prepare your environment according to [these steps](../README.md)
+Prepare your environment according to [these steps](../README.md). Make sure to setup IBM Cloud Logs Instance.
 
 ### Define your settings
 
 Define your settings:
-- logdna_ingestion_hostname: The ingestion host name of your Log instance which you provisioned previously
-- logdna_ingestion_key: The ingestion key of your Log instance
+- icl_hostname: The host name of your ICL Log instance which you provisioned previously
+- icl_iam_apikey: The API key of your Log instance
 - registry: The container registry to pull your workload container image from
 - pull_username: The container registry username for pulling your workload container image
 - pull_password: The container registry password for pulling your workload container image
@@ -30,8 +30,8 @@ Use one of the following options to define the variables:
 Set the following environment variables:
 
 ```text
-TF_VAR_logdna_ingestion_key=
-TF_VAR_logdna_ingestion_hostname=
+TF_VAR_icl_iam_apikey=
+TF_VAR_icl_hostname=
 TF_VAR_registry=
 TF_VAR_pull_username=
 TF_VAR_pull_password=
