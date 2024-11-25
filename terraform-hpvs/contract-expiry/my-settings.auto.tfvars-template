@@ -1,5 +1,5 @@
-logdna_ingestion_key="<logdna-ingestion-key>"
-logdna_ingestion_hostname="<logdna-hostname>"
+icl_hostname="<ICL hostname>"
+icl_iam_apikey="<IBM Cloud API key>"
 
 hpcr_csr_country="<CSR - Country>"
 hpcr_csr_state="<CSR - State>"
