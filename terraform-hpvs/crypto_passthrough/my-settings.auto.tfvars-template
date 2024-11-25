@@ -1,0 +1,11 @@
+libvirt_host="Your libvirt host name"
+libvirt_user="User name authorized by a SSH server in your libvirt host"
+vsi_image_path="Path to your VSI image"
+hpcr_image_cert_path="Path to certificate"
+logdna_ingestion_key="Your LogDNA ingestion key".
+logdna_ingestion_hostname="rsyslog endpoint of IBM Log Analysis instance"
+crypto_domain_id="crypto card's domain ID"
+crypto_secret="secret for crypto card's domain"
+crypto_mkvp="crypto card's mkvp"
+hkd_path="HKD path"
+crypto_card_uuid="crypto card's domain UUID"
