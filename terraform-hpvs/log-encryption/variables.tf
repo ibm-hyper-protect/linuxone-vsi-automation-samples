@@ -8,15 +8,20 @@ variable "zone" {
   description = "Zone to deploy to, e.g. 2."
 }
 
-variable "logdna_ingestion_key" {
+variable "icl_hostname" {
   type        = string
-  description = "Ingestion key for logDNA."
   sensitive   = true
+  description = <<-DESC
+                  Host of IBM Cloud Logs. This can be
+                  obtained from cloud logs tab under Logging instances
+                DESC
 }
 
-variable "logdna_ingestion_hostname" {
+variable "icl_iam_apikey" {
   type        = string
-  description = "Ingestion hostname (just the name not the port)."
+  description = <<-DESC
+                  This can be obtained from Access(IAM) under Manage
+                DESC
 }
 
 variable "prefix" {
