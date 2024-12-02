@@ -1,0 +1,14 @@
+icic_username="ICIC username"
+icic_password="ICIC password"
+icic_tenant_name="ICIC tenant name"
+icic_auth_url="ICIC authentication URL"
+icic_domain_name="ICIC domain name"
+
+prefix = "prefix for names"
+hpvs_image_path = "path to HPVS qcow2"
+icic_network_name = "ICIC network name"
+icic_target_compute_node = "Target compute node to bring up instance"
+
+logdna_ingestion_key="LogDNA instance key"
+logdna_ingestion_hostname="LogDNA instance hostname"
+hpcr_image_cert_path = "HPCR encryption certificate path"
