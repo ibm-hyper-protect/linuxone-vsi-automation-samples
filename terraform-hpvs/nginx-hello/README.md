@@ -4,7 +4,7 @@ This sample deploys the [nginx-hello](https://hub.docker.com/r/nginxdemos/hello/
 
 ### Prerequisite
 
-Prepare your environment according to [these steps](../README.md)
+Prepare your environment according to [these steps](../README.md). Make sure to setup IBM Cloud Logs Instance.
 
 ### Prerequisite (on-premise only)
 
@@ -33,8 +33,8 @@ Under the `cloud` directory
 IC_API_KEY=
 TF_VAR_zone=
 TF_VAR_region=
-TF_VAR_logdna_ingestion_key=
-TF_VAR_logdna_ingestion_hostname=
+TF_VAR_icl_iam_apikey=
+TF_VAR_icl_hostname=
 ```
 
 Under the `onprem` directory
@@ -43,8 +43,8 @@ TF_VAR_libvirt_host=
 TF_VAR_libvirt_user=
 TF_VAR_vsi_image=
 TF_VAR_ssh_private_key_path=
-TF_VAR_logdna_ingestion_key=
-TF_VAR_logdna_ingestion_hostname=
+TF_VAR_icl_iam_apikey=
+TF_VAR_icl_hostname=
 ```
 
 ### Run the Example

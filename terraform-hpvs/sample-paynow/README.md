@@ -7,15 +7,15 @@ For more information, see this [tutorial](https://cloud.ibm.com/docs/vpc?topic=v
 
 ### Prerequisite
 
-Prepare your local environment according to [these steps](../README.md)
+Prepare your local environment according to [these steps](../README.md). Make sure to setup IBM Cloud Logs Instance.
 
 ### Define your settings
 
 In file `compose\pod.yml` adapt the value for `image` to reference your container registry and your container image including the digest.
 
 Define your settings:
-- logdna_ingestion_hostname: The ingestion host name of your Log instance which you provisioned previously
-- logdna_ingestion_key: The ingestion key of your Log instance
+- icl_hostname: The host name of your ICL Log instance which you provisioned previously
+- icl_iam_apikey: The API key of your Log instance
 - registry: The container registry where the workload container image is pulled from, e.g. `us.icr.io`
 - pull_username: The container registry username for pulling your workload container image
 - pull_password: The container registry password for pulling your workload container image

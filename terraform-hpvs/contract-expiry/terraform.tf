@@ -17,9 +17,9 @@ locals {
     "env" : {
       "type" : "env",
       "logging" : {
-        "logDNA" : {
-          "ingestionKey" : var.logdna_ingestion_key,
-          "hostname" : var.logdna_ingestion_hostname,
+        "logRouter" : {
+          "hostname" : var.icl_hostname,
+          "iamApiKey" : var.icl_iam_apikey,
         },
       },
     },

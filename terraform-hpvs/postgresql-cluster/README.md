@@ -4,7 +4,7 @@ This deploys a simple [postgres](https://hub.docker.com/r/s390x/postgres/) clust
 
 ### Prerequisite
 
-Prepare your environment according to [these steps](https://github.com/ibm-hyper-protect/linuxone-vsi-automation-samples/blob/master/terraform-hpvs/README.md)
+Prepare your environment according to [these steps](https://github.com/ibm-hyper-protect/linuxone-vsi-automation-samples/blob/master/terraform-hpvs/README.md). Make sure to setup IBM Cloud Logs Instance.
 
 ### Settings
 
@@ -25,8 +25,8 @@ Set the default vaule of variables.tf:
 "zone_master"
 "zone_slave_1"
 "zone_slave_2"
-"logdna_ingestion_key"
-"logdna_ingestion_hostname"
+"icl_iam_apikey"
+"icl_hostname"
 "prefix"
 "profile" 
 "ssh_public_key"

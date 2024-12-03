@@ -21,8 +21,7 @@ locals {
       "logging" : {
         "logRouter" : {
           "hostname" : var.icl_hostname,
-          "iamApiKey" : var.icl_iam_apikey,
-          "port": 443,
+          "iamApiKey" : var.icl_iam_apikey
         }
       }
     },

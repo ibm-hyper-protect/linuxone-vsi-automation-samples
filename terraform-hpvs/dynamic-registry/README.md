@@ -4,7 +4,7 @@ This sample deploys the [hello-world](https://hub.docker.com/_/hello-world) exam
 
 ### Prerequisite
 
-Prepare your environment according to [these steps](../README.md)
+Prepare your environment according to [these steps](../README.md). Make sure to setup IBM Cloud Logs Instance.
 
 ## Usecase
 

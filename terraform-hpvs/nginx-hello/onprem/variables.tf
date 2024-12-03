@@ -31,22 +31,18 @@ variable "ssh_private_key_path" {
   default     = "~/.ssh/id_rsa"
 }
 
-variable "logdna_ingestion_key" {
+variable "icl_hostname" {
   type        = string
-  sensitive   = true
   description = <<-DESC
-                  Ingestion key for IBM Log Analysis instance. This can be 
-                  obtained from "Linux/Ubuntu" section of "Logging resource" 
-                  tab of IBM Log Analysis instance
+                  Host of IBM Cloud Logs. This can be
+                  obtained from cloud logs tab under Logging instances
                 DESC
 }
 
-variable "logdna_ingestion_hostname" {
+variable "icl_iam_apikey" {
   type        = string
+  sensitive   = true
   description = <<-DESC
-                  rsyslog endpoint of IBM Log Analysis instance. 
-                  Don't include the port. Example: 
-                  syslog-a.<log_region>.logging.cloud.ibm.com
-                  log_region is the region where IBM Log Analysis is deployed
+                  This can be obtained from Access(IAM) under Manage
                 DESC
 }
