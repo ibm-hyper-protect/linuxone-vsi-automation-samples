@@ -1,0 +1,9 @@
+# 
+services:
+  demoflaskapp:
+    image: quay.io/sashwatk/demo-flask-app@sha256:bafa207e0d6a4b4cda1c76b8f191cb091eeeb7792b21115e2aa281808a53cf87
+    ports:
+      - "80:5000"
+    volumes:
+      - "/mnt/data:/data"
+      - "/var/hyperprotect/:/var/hyperprotect/:ro"
