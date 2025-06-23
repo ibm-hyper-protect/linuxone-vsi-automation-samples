@@ -1,7 +1,7 @@
 version: '3.0'
 services:
   busybox:
-    image: registry.access.redhat.com/ubi8/ubi@sha256:e721f98a49e731f0bd64f8e89c229e1dbb38c46265d92849b3e0bedaf5f81139
+    image: registry.access.redhat.com/ubi8/ubi@sha256:19eae3d00adb37538a62b9bd093fd1e01dc6197f1925e960224244a1ed52bfb5
     command: |
       curl -v -X "PUT" "${S3_URL}" -H "Authorization: ${AUTHORIZATION}"  -H "Content-Type: text/plain"  -d @/var/hyperprotect/se-checksums.txt.enc
     volumes:
