@@ -1,4 +1,4 @@
-## Deploy Hyper Protect Container Runtime on IBM Cloud Infrastructure Center (ICIC)
+## Deploy Hyper Protect Container Runtime with RedHat Virtualization Services (HPCR RHVS) on IBM Cloud Infrastructure Center (ICIC)
 
 ### Preparation
 
@@ -43,13 +43,14 @@ TF_VAR_icic_auth_url="ICIC authentication URL"
 TF_VAR_icic_domain_name="ICIC domain name"
 
 TF_VAR_prefix = "prefix for names"
-TF_VAR_hpvs_image_path = "path to HPVS qcow2"
+TF_VAR_hpcr_rhvs_image_path = "path to HPCR RHVS qcow2"
 TF_VAR_icic_network_name = "ICIC network name"
 TF_VAR_icic_target_compute_node = "Target compute node to bring up instance"
 
-TF_VAR_logdna_ingestion_key="LogDNA instance key"
-TF_VAR_logdna_ingestion_hostname="LogDNA instance hostname"
-TF_VAR_hpcr_image_cert_path = "HPCR encryption certificate path"
+TF_VAR_icl_iam_apikey="Your IBM Cloud Logs IAM API Key"
+TF_VAR_icl_hostname="Your IBM Cloud Logs Hostname"
+
+TF_VAR_hpcr_rhvs_image_cert_path = "HPCR RHVS encryption certificate path"
 ```
 
 ### Run the Example
