@@ -21,10 +21,10 @@ provider "openstack" {
   insecure    = true
 }
 
-# Create image
-resource "openstack_images_image_v2" "icic_rhel_image" {
+# Create HPCR RHVS Image on ICIC
+resource "openstack_images_image_v2" "icic_hpcr_rhvs_image" {
   name             = "${var.prefix}-image"
-  local_file_path  = var.hpvs_image_path
+  local_file_path  = var.hpcr_rhvs_image_path
   container_format = "bare"
   disk_format      = "qcow2"
   properties = {
@@ -37,8 +37,8 @@ resource "openstack_images_image_v2" "icic_rhel_image" {
   }
 }
 
-# Creates flavour to define resource requirements for HPCR
-resource "openstack_compute_flavor_v2" "icic_hpvs_flavor" {
+# Create flavour to define resource requirements for HPCR-RHVS
+resource "openstack_compute_flavor_v2" "icic_hpcr_rhvs_flavor" {
   name  = "${var.prefix}-flavor"
   ram   = "4096"
   vcpus = "2"
@@ -46,31 +46,31 @@ resource "openstack_compute_flavor_v2" "icic_hpvs_flavor" {
 }
 
 # Create security group
-resource "openstack_networking_secgroup_v2" "icic_hpvs_sg" {
+resource "openstack_networking_secgroup_v2" "icic_hpcr_rhvs_sg" {
   name        = "${var.prefix}-sg"
-  description = "HPVS ICIC security group"
+  description = "HPCR RHVS ICIC security group"
 }
 
 # Allow inbound HTTP (port 80)
-resource "openstack_networking_secgroup_rule_v2" "icic_hpvs_sg_rule_http" {
+resource "openstack_networking_secgroup_rule_v2" "icic_hpcr_rhvs_sg_rule_http" {
   direction         = "ingress"
   ethertype         = "IPv4"
   protocol          = "tcp"
   port_range_min    = 80
   port_range_max    = 80
   remote_ip_prefix  = "0.0.0.0/0"
-  security_group_id = openstack_networking_secgroup_v2.icic_hpvs_sg.id
+  security_group_id = openstack_networking_secgroup_v2.icic_hpcr_rhvs_sg.id
 }
 
 # Allow all outbound traffic
-resource "openstack_networking_secgroup_rule_v2" "icic_hpvs_rule_all_outbound" {
+resource "openstack_networking_secgroup_rule_v2" "icic_hpcr_rhvs_rule_all_outbound" {
   direction         = "egress"
   ethertype         = "IPv4"
   protocol          = "tcp"
   port_range_min    = 1
   port_range_max    = 65535
   remote_ip_prefix  = "0.0.0.0/0"
-  security_group_id = openstack_networking_secgroup_v2.icic_hpvs_sg.id
+  security_group_id = openstack_networking_secgroup_v2.icic_hpcr_rhvs_sg.id
 }
 
 # Generates base64 of archive of pods.yaml
@@ -84,9 +84,9 @@ locals {
     "env" : {
       "type" : "env",
       "logging" : {
-        "logDNA" : {
-          "ingestionKey" : var.logdna_ingestion_key,
-          "hostname" : var.logdna_ingestion_hostname,
+        "logRouter" : {
+          "iamApiKey" : var.icl_iam_apikey,
+          "hostname" : var.icl_hostname,
         }
       }
     },
@@ -102,14 +102,14 @@ locals {
 # Generates encrypted contract
 resource "hpcr_contract_encrypted" "contract" {
   contract = local.contract
-  cert = file(var.hpcr_image_cert_path)
+  cert = file(var.hpcr_rhvs_image_cert_path)
 }
 
-# Provision HPVS instance
-resource "openstack_compute_instance_v2" "icic_hpvs_instance" {
+# Provision HPCR RHVS instance
+resource "openstack_compute_instance_v2" "icic_hpcr_rhvs_instance" {
   name      = "${var.prefix}-instance"
-  image_id  = openstack_images_image_v2.icic_rhel_image.id
-  flavor_id = openstack_compute_flavor_v2.icic_hpvs_flavor.id
+  image_id  = openstack_images_image_v2.icic_hpcr_rhvs_image.id
+  flavor_id = openstack_compute_flavor_v2.icic_hpcr_rhvs_flavor.id
   
   network {
     name = var.icic_network_name
@@ -119,6 +119,6 @@ resource "openstack_compute_instance_v2" "icic_hpvs_instance" {
     query = ["==", "hypervisor_hostname", var.icic_target_compute_node]
   }
 
-  security_groups = [ openstack_networking_secgroup_v2.icic_hpvs_sg.name ]
+  security_groups = [ openstack_networking_secgroup_v2.icic_hpcr_rhvs_sg.name ]
   user_data = hpcr_contract_encrypted.contract.rendered
 }
