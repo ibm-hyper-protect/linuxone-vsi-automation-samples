@@ -2,7 +2,7 @@ terraform {
   required_providers {
     hpcr = {
       source  = "ibm-hyper-protect/hpcr"
-      version = ">= 0.1.12"
+      version = ">= 1.2.0"
     }
     ibm = {
       source  = "IBM-Cloud/ibm"
@@ -67,7 +67,7 @@ locals {
 # We use a temporary, random keypair to execute the signature. This could also be overriden. 
 resource "hpcr_contract_encrypted" "contract" {
   contract = local.contract
-  cert     = data.hpcr_encryption_certs.enc_certs.certs[data.hpcr_image.hyper_protect_image.version]
+  cert     = data.hpcr_encryption_certs.enc_certs.certs[data.hpcr_image.hyper_protect_image.version]["cert"]
 }
 
 resource "local_file" "contract" {
