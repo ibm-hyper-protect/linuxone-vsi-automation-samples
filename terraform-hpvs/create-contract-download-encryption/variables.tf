@@ -31,6 +31,7 @@ variable "region" {
       var.region == "br-sao" ||
       var.region == "ca-tor" ||
       var.region == "jp-tok" ||
+      var.region == "us-south" ||
     var.region == "us-east")
     error_message = "Value of region must be one of eu-gb/br-sao/ca-tor/jp-tok/us-east."
   }
