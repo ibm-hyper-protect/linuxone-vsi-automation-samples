@@ -45,11 +45,26 @@ OpenSSL 1.1.1q  19 Jan 2026
 2. Download the HPVS CLI tool
 Download the CLI binary for your operating system from the [HPVS CLI Tool](https://github.com/ibm-hyper-protect/contract-cli/releases)
 
-3. Verify the CLI Installation
+3. Rename the downloaded binary
+After downloading, rename the binary to `contract-cli`.
+
+Example(macOS):
+```text
+contract-cli-darwin-* to contract-cli
+```
+
+4. Ensure the binary is executable
+
+Make sure the CLI binary has execute permissions:
+```bash
+chmod +x contract-cli
+```
+
+5. Verify the CLI Installation
 
 Run the following command:
 ```bash
-./contract-cli-darwin-* version
+./contract-cli version
 ```
 
 Expected output (example):
