@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Path to the CLI (adjust if needed)
-CLI=./contract-cli-darwin-*
+CLI=./contract-cli
 
 # Text input
 textInput="Encode my message on base64"
@@ -14,7 +14,7 @@ TEXT_OUTPUT_FILE="text_base64_output.txt"
 "$CLI" base64 \
   --in "$textInput" \
   --format text \
-  --output "$TEXT_OUTPUT_FILE"
+  --out "$TEXT_OUTPUT_FILE"
 
 echo "Text Base64 Output:"
 cat "$TEXT_OUTPUT_FILE"
@@ -31,7 +31,7 @@ JSON_OUTPUT_FILE="json_base64_output.txt"
 "$CLI" base64 \
   --in "$jsonInput" \
   --format json \
-  --output "$JSON_OUTPUT_FILE"
+  --out "$JSON_OUTPUT_FILE"
 
 echo "JSON Base64 Output:"
 cat "$JSON_OUTPUT_FILE"

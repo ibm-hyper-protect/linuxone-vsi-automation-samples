@@ -6,25 +6,16 @@ Encode text or JSON data to Base64 format. Useful for encoding data that needs t
 ## Prerequisites
 
 Prepare your environment according to [these steps](../README.md).
+Ensure that the HPVS CLI tool (contract-cli) is downloaded, renamed, and available on your system as described earlier.
 
 ## Usage
 
-### 1. Update CLI Path
+### 1. Configure the CLI path
+Open the `base64.sh` script and update the CLI variable to point to the location where you downloaded the `contract-cli` binary.
 
-Edit the script and replace the `CLI` variable with the downloaded CLI binary matching your operating system.
-
-```bash
-CLI=./contract-cli-darwin-*
-```
-
-## Example
-```bash
-CLI=./contract-cli-darwin-amd64
-```
-
-Ensure the binary is executable:
-```bash
-chmod +x contract-cli-*
+Example:
+```text
+CLI_PATH=./contract-cli
 ```
 
 ### 2. Run the Script
