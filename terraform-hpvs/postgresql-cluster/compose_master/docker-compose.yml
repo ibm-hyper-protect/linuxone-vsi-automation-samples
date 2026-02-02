@@ -1,6 +1,6 @@
 services:
   postgresql:
-    image: docker.io/library/postgres:12@sha256:d5433064852277f3187a591e02780d377c253f69bfbe3ca66c4cf3d58be83996
+    image: docker.io/library/postgres:12@sha256:2f2a8c2a7d10862e7fba2602e304523554f9df8244c632dafe2628ccb398fb5c
     ports:
       - "5432:5432"
     restart: always
