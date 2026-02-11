@@ -50,7 +50,7 @@ chmod +x validateNetwork.sh
 
 ## What the Script Does
 
-The script demonstrates three validation examples:
+The script demonstrates one validation example:
 
 ### Example 1: Validate Network Configuration
 - Validates network-config YAML file against the schema
@@ -85,5 +85,8 @@ The `validate-network` command supports the following flags:
 ### Error: "Invalid network configuration structure"
 - Review the network configuration schema
 - Check for missing required fields
-- Verify field names are spelled correctly
-- Ensure proper YAML indentation
+
+## Related Commands
+- `validate-contract`: Validate contract YAML files
+- `validate-encryption-certificate`: Validate encryption certificates
+- `encrypt`: Encrypt contract files for deployment

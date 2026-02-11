@@ -84,4 +84,30 @@ The `base64-tgz` command supports the following flags:
 - The input folder must contain either a `docker-compose.yaml` or `pods.yaml` file
 - For encrypted output, you need a valid encryption certificate from your Hyper Protect environment
 - The generated Base64 string can be used directly in Hyper Protect contracts
+
+## Troubleshooting
+
+### Error: "Input folder not found"
+- Verify the folder path is correct
+- Ensure the folder exists and is accessible
+
+### Error: "No docker-compose.yaml or pods.yaml found"
+- Check that your folder contains one of these files
+- Verify the file name matches exactly (case-sensitive)
+
+### Error: "Encryption certificate not found"
+- Download the certificate using `download-certificate` command
+- Ensure the certificate path is correct
+
+### Encrypted Output Fails
+- Verify you have a valid encryption certificate
+- Check that the certificate matches your target platform
+- Ensure the `--os` flag is specified for encrypted output
 - The tar.gz compression reduces the size of the configuration before encoding
+
+## Related Commands
+
+- `base64`: Encode text and JSON to Base64
+- `encrypt`: Encrypt complete contract files
+- `download-certificate`: Download encryption certificates
+- `validate-contract`: Validate contracts before deployment

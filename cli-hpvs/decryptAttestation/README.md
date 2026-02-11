@@ -110,9 +110,8 @@ The `decrypt-attestation` command supports the following flags:
 - Verify the attestation file is from the expected HPVS instance
 - Check that the file hasn't been corrupted during transfer
 
-## Security Notes
+## Related Commands
 
-- Keep your private key secure and never share it
-- Attestation records are instance-specific
-- Regular verification of attestation records helps maintain security compliance
-- Store decrypted attestation records securely as they contain sensitive information about your workload
+- `encrypt`: Encrypt contracts for deployment (uses same key pair)
+- `validate-contract`: Validate contract before encryption
+- `download-certificate`: Download encryption certificates

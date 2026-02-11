@@ -153,3 +153,10 @@ Error: YAML parsing error at line 15
 - Check for missing required fields
 - Verify field names are spelled correctly
 - Ensure proper YAML indentation
+
+## Related Commands
+
+- `encrypt`: Encrypt validated contracts for deployment
+- `validate-encryption-certificate`: Validate encryption certificates
+- `validate-network`: Validate network configurations
+- `download-certificate`: Download encryption certificates

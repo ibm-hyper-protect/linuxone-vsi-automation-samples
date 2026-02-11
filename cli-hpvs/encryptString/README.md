@@ -148,3 +148,10 @@ The `encrypt-string` command supports the following flags:
 - Verify you're using the complete encrypted string including the prefix
 - Ensure the HPCR version matches the certificate version used for encryption
 - Check that the encrypted string wasn't truncated or modified
+
+## Related Commands
+
+- `download-certificate`: Download encryption certificates from IBM repository
+- `get-certificate`: Extract specific certificate versions
+- `validate-encryption-certificate`: Validate certificates before use
+- `encrypt`: Encrypt complete contract files

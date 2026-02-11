@@ -178,3 +178,9 @@ Status: available
 - HPCR only runs on s390x architecture (IBM Z/LinuxONE)
 - Verify you're targeting a region with s390x support
 - Check image name includes `s390x`
+
+## Related Commands
+
+- `encrypt`: Encrypt contracts for deployment on extracted image
+- `validate-contract`: Validate contracts before deployment
+- `download-certificate`: Download encryption certificates for the HPCR version

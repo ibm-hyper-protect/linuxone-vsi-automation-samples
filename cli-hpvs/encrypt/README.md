@@ -194,3 +194,11 @@ The `encrypt` command supports the following flags:
 - Verify the encrypted contract was generated successfully
 - Ensure the public key used during instance creation matches your private key
 - Check that the HPCR version matches the certificate version
+
+## Related Commands
+
+- `download-certificate`: Download encryption certificates from IBM repository
+- `get-certificate`: Extract specific certificate versions
+- `validate-contract`: Validate contract before encryption
+- `validate-encryption-certificate`: Validate certificates before use
+- `encrypt-string`: Encrypt sensitive strings for use in contracts

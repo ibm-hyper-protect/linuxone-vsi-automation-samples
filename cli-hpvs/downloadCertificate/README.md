@@ -88,4 +88,11 @@ The script demonstrates five usage examples:
 ### Invalid Version Number
 - Verify the version number exists in IBM's repository
 - Check IBM documentation for available versions
+
+## Related Commands
+
+- `get-certificate`: Extract specific certificate versions from downloaded certificates
+- `validate-encryption-certificate`: Validate downloaded certificates
+- `encrypt`: Encrypt contracts using downloaded certificates
+- `encrypt-string`: Encrypt sensitive strings using downloaded certificates
 - Ensure correct format (e.g., 1.0.23, not v1.0.23)

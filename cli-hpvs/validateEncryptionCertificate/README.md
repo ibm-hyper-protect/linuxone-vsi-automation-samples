@@ -121,3 +121,10 @@ The `validate-encryption-certificate` command supports the following flags:
 - Verify the certificate version matches your target HPCR version
 - Check that you're using the correct certificate for the platform
 - Ensure the certificate file is accessible during encryption
+
+## Related Commands
+
+- `download-certificate`: Download encryption certificates from IBM repository
+- `get-certificate`: Extract specific certificate versions
+- `encrypt`: Encrypt contracts using validated certificates
+- `encrypt-string`: Encrypt strings using validated certificates
