@@ -46,5 +46,3 @@ echo "=== Example 3: Output to stdout ==="
 
 echo ""
 echo "Script completed successfully!"
-
-# Made with Bob
