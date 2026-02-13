@@ -76,4 +76,14 @@ contract-cli version v1.0.0 Darwin ARM64 Mon Jan 19 hh:mm:ss UTC 2026
 
 Each example includes its own README with detailed instructions. See the following:
 
-- [base64](base64/README.md) - Encode input as base64 example
+- [base64](base64/README.md) - Encodes text and JSON inputs into Base64
+- [base64Tgz](base64Tgz/README.md) - Creates Base64-encoded tar.gz archives
+- [decryptAttestation](decryptAttestation/README.md) - Decrypts encrypted attestation records
+- [downloadCertificate](downloadCertificate/README.md) - Downloads encryption certificates
+- [encrypt](encrypt/README.md) - Generates signed and encrypted contracts
+- [encryptString](encryptString/README.md) - Encrypts sensitive strings
+- [getCertificate](getCertificate/README.md) - Extracts specific certificate versions from downloaded file
+- [image](image/README.md) - Extracts HPCR image details
+- [validateContract](validateContract/README.md) - Validates unencrypted contracts against schema
+- [validateEncryptionCertificate](validateEncryptionCertificate/README.md) - Validates encryption certificates
+- [validateNetwork](validateNetwork/README.md) - Validates network-config YAML files
