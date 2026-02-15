@@ -1,5 +1,5 @@
 collections:
   - name: ibm.cloudcollection
-    version: 1.49.0
+    version: 1.71.2
   - name: community.crypto
     version: 2.15.1
