@@ -1,0 +1,89 @@
+## A command-line tool for automating the provisioning and management of IBM Hyper Protect Confidential Computing workloads Examples.
+
+## Supported Platforms
+The CLI is available for the following operating systems and architectures:
+
+| OS | Architecture | Binary |
+|----|--------------|--------|
+| Linux | amd64, arm64, s390x, ppc64le | `contract-cli-linux-*` |
+| macOS | amd64, arm64 | `contract-cli-darwin-*` |
+| Windows | amd64, arm64 | `contract-cli-windows-*.exe` |
+
+## Preparation
+
+1. Install OpenSSL
+Ensure that the OpenSSL binary is installed on your system:
+- On Linux: `apt-get install openssl` or `yum install openssl`
+- On macOS: `brew install openssl`
+- On Windows: [Download OpenSSL](https://slproweb.com/products/Win32OpenSSL.html)
+
+Optional: Custom OpenSSL Path
+- If OpenSSL is not in your system `PATH`, set the `OPENSSL_BIN` environment variable:
+
+```
+# Linux/macOS
+export OPENSSL_BIN=/usr/bin/openssl
+```
+
+```
+# Windows (PowerShell)
+$env:OPENSSL_BIN="C:\Program Files\OpenSSL-Win64\bin\openssl.exe"
+```
+
+- Verify OpenSSL Installation
+
+```bash
+openssl version
+```
+
+Expected output (example):
+
+```text
+OpenSSL 1.1.1q  19 Jan 2026
+```
+
+2. Download the HPVS CLI tool
+Download the CLI binary for your operating system from the [HPVS CLI Tool](https://github.com/ibm-hyper-protect/contract-cli/releases)
+
+3. Rename the downloaded binary
+After downloading, rename the binary to `contract-cli`.
+
+Example(macOS):
+```text
+contract-cli-darwin-* to contract-cli
+```
+
+4. Ensure the binary is executable
+
+Make sure the CLI binary has execute permissions:
+```bash
+chmod +x contract-cli
+```
+
+5. Verify the CLI Installation
+
+Run the following command:
+```bash
+./contract-cli version
+```
+
+Expected output (example):
+```text
+contract-cli version v1.0.0 Darwin ARM64 Mon Jan 19 hh:mm:ss UTC 2026
+```
+
+## Examples
+
+Each example includes its own README with detailed instructions. See the following:
+
+- [base64](base64/README.md) - Encodes text and JSON inputs into Base64
+- [base64Tgz](base64Tgz/README.md) - Creates Base64-encoded tar.gz archives
+- [decryptAttestation](decryptAttestation/README.md) - Decrypts encrypted attestation records
+- [downloadCertificate](downloadCertificate/README.md) - Downloads encryption certificates
+- [encrypt](encrypt/README.md) - Generates signed and encrypted contracts
+- [encryptString](encryptString/README.md) - Encrypts sensitive strings
+- [getCertificate](getCertificate/README.md) - Extracts specific certificate versions from downloaded file
+- [image](image/README.md) - Extracts HPCR image details
+- [validateContract](validateContract/README.md) - Validates unencrypted contracts against schema
+- [validateEncryptionCertificate](validateEncryptionCertificate/README.md) - Validates encryption certificates
+- [validateNetwork](validateNetwork/README.md) - Validates network-config YAML files
