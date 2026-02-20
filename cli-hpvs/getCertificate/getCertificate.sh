@@ -61,8 +61,17 @@ echo "=== Example 3: Extract and output to stdout ==="
 echo ""
 
 
-# Example 4: Extract latest version for encryption
-echo "=== Example 4: Extract for encryption operations ==="
+# Example 4: Extract using stdin (pipe)
+echo "=== Example 4: Extract using stdin (pipe) ==="
+cat "$CERTIFICATES_JSON" | "$CLI" get-certificate \
+  --in - \
+  --version 1.0.23
+
+echo ""
+
+
+# Example 5: Extract latest version for encryption
+echo "=== Example 5: Extract for encryption operations ==="
 echo "Extracting certificate for use with encrypt commands..."
 "$CLI" get-certificate \
   --in "$CERTIFICATES_JSON" \

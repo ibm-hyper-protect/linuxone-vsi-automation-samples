@@ -80,8 +80,19 @@ echo "..."
 echo ""
 
 
-# Example 4: Contract with expiry (commented out - requires additional files)
-echo "=== Example 4: Contract with Expiry Feature ==="
+# Example 4: Encrypt using stdin (pipe)
+echo "=== Example 4: Encrypt using stdin (pipe) ==="
+echo "Generating encrypted contract from stdin (first 200 characters):"
+cat "$CONTRACT_FILE" | "$CLI" encrypt \
+  --in - \
+  --cert "$ENCRYPTION_CERT" \
+  --priv "$PRIVATE_KEY" | head -c 200
+echo "..."
+echo ""
+
+
+# Example 5: Contract with expiry (commented out - requires additional files)
+echo "=== Example 5: Contract with Expiry Feature ==="
 echo "For contracts with expiry, you need additional CA certificate and key files."
 echo "Uncomment the following lines if you have the required files:"
 echo ""

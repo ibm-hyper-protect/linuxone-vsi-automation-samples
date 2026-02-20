@@ -99,6 +99,13 @@ The script demonstrates four usage examples:
   --out encryption_cert.crt
 ```
 
+### Extract using stdin (pipe):
+```bash
+cat certificates.json | ./contract-cli get-certificate \
+  --in - \
+  --version 1.0.23
+```
+
 ### Extract from YAML file:
 ```bash
 ./contract-cli get-certificate \

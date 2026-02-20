@@ -48,4 +48,15 @@ else
 fi
 echo ""
 
+
+# Example 2: Validate using stdin (pipe)
+echo "=== Example 2: Validate using stdin (pipe) ==="
+if cat "$NETWORK_CONFIG" | "$CLI" validate-network \
+  --in -; then
+    echo "Network configuration is valid (stdin input)"
+else
+    echo "Network configuration validation failed"
+fi
+echo ""
+
 echo "Script completed!"

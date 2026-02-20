@@ -88,6 +88,12 @@ The `validate-encryption-certificate` command supports the following flags:
   --in /path/to/certs/encryption_1.0.24.crt
 ```
 
+### Validate using stdin (pipe):
+```bash
+cat encryption.crt | ./contract-cli validate-encryption-certificate \
+  --in -
+```
+
 ### Validate as part of workflow:
 ```bash
 # Download certificate

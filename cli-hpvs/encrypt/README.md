@@ -155,6 +155,15 @@ The `encrypt` command supports the following flags:
   --priv private.key
 ```
 
+### Using stdin (pipe):
+```bash
+cat contract.yaml | ./contract-cli encrypt \
+  --in - \
+  --cert encryption.crt \
+  --priv private.key \
+  --out encrypted_contract.txt
+```
+
 ### With contract expiry (90 days):
 ```bash
 ./contract-cli encrypt \

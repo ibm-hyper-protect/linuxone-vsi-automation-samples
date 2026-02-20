@@ -121,6 +121,13 @@ The `validate-contract` command supports the following flags:
   --in contract.yaml
 ```
 
+### Validate using stdin (pipe):
+```bash
+cat contract.yaml | ./contract-cli validate-contract \
+  --in - \
+  --os hpvs
+```
+
 ## Common Validation Errors
 
 ### Missing Required Fields

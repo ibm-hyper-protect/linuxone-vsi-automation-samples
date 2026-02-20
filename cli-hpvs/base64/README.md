@@ -59,6 +59,13 @@ The `base64` command supports the following flags:
   --out encoded.txt
 ```
 
+### Encode using stdin (pipe):
+```bash
+echo "Hello from stdin" | ./contract-cli base64 \
+  --in - \
+  --format text
+```
+
 ## Troubleshooting
 
 ### Error: "Invalid input format"

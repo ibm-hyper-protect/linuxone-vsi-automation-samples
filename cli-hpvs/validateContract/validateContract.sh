@@ -96,7 +96,19 @@ fi
 echo ""
 
 
-# Example 5: Demonstrate validation failure (if invalid contract exists)
+# Example 5: Validate using stdin (pipe)
+echo "=== Example 5: Validate using stdin (pipe) ==="
+if cat "$VALID_CONTRACT" | "$CLI" validate-contract \
+  --in - \
+  --os hpvs; then
+    echo "Contract is valid for HPVS platform (stdin input)"
+else
+    echo "Contract validation failed"
+fi
+echo ""
+
+
+# Example 6: Demonstrate validation failure (if invalid contract exists)
 if [ -f "$INVALID_CONTRACT" ]; then
     echo "=== Example 5: Validate invalid contract (expected to fail) ==="
     if "$CLI" validate-contract \

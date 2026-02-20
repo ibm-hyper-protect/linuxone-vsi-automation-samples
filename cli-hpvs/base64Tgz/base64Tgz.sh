@@ -45,4 +45,13 @@ echo "=== Example 3: Output to stdout ==="
   --output plain
 
 echo ""
+
+
+# Example 4: Using stdin (pipe)
+echo "=== Example 4: Using stdin (pipe) ==="
+cat "$COMPOSE_FOLDER" | "$CLI" base64-tgz \
+  --in - \
+  --output plain
+
+echo ""
 echo "Script completed successfully!"
