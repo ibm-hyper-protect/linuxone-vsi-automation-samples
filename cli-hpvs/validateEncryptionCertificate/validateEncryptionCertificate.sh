@@ -42,7 +42,19 @@ fi
 echo ""
 
 
-# Example 2: Validate certificate from different location
+# Example 2: Validate using stdin (pipe)
+echo "=== Example 2: Validate using stdin (pipe) ==="
+if cat "$CERT_FILE" | "$CLI" validate-encryption-certificate \
+  --in -; then
+    echo "Certificate validation completed successfully (stdin input)"
+else
+    echo "Certificate validation failed"
+    echo "   The certificate may be expired or invalid"
+fi
+echo ""
+
+
+# Example 3: Validate certificate from different location
 CERT_FILE_2="./certs/encryption_1.0.24.crt"
 if [ -f "$CERT_FILE_2" ]; then
     echo "=== Example 2: Validate certificate from different location ==="

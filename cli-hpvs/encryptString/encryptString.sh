@@ -79,4 +79,15 @@ echo "Encrypting API key and displaying result:"
   --cert "$ENCRYPTION_CERT"
 
 echo ""
+
+
+# Example 5: Encrypt using stdin (pipe)
+echo "=== Example 5: Encrypt using stdin (pipe) ==="
+echo "Encrypting password from stdin:"
+echo "MyStdinPassword456" | "$CLI" encrypt-string \
+  --in - \
+  --format text \
+  --cert "$ENCRYPTION_CERT"
+
+echo ""
 echo "Script completed successfully!"

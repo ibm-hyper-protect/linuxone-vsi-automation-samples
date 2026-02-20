@@ -75,6 +75,12 @@ The `validate-network` command supports the following flags:
   --in network-config.yaml
 ```
 
+### Validate using stdin (pipe):
+```bash
+cat network-config.yaml | ./contract-cli validate-network \
+  --in -
+```
+
 ## Troubleshooting
 
 ### Error: "Network config file not found"

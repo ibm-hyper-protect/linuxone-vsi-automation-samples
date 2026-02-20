@@ -79,6 +79,11 @@ The `base64-tgz` command supports the following flags:
 ./contract-cli base64-tgz --in ./compose --output plain
 ```
 
+### Using stdin (pipe):
+```bash
+cat ./compose | ./contract-cli base64-tgz --in - --output plain
+```
+
 ## Notes
 
 - The input folder must contain either a `docker-compose.yaml` or `pods.yaml` file

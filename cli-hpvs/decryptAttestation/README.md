@@ -95,6 +95,13 @@ The `decrypt-attestation` command supports the following flags:
   --priv ./private.key | grep "workload"
 ```
 
+### Decrypt using stdin (pipe):
+```bash
+cat ./se-checksums.txt.enc | ./contract-cli decrypt-attestation \
+  --in - \
+  --priv ./private.key
+```
+
 ## Troubleshooting
 
 ### Error: "Encrypted attestation file not found"

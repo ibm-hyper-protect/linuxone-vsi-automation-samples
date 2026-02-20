@@ -51,6 +51,15 @@ echo "=== Example 2: Decrypt and output to stdout ==="
   --priv "$PRIVATE_KEY_FILE"
 
 echo ""
+
+
+# Example 3: Decrypt using stdin (pipe)
+echo "=== Example 3: Decrypt using stdin (pipe) ==="
+cat "$ENCRYPTED_ATTESTATION_FILE" | "$CLI" decrypt-attestation \
+  --in - \
+  --priv "$PRIVATE_KEY_FILE"
+
+echo ""
 echo "Script completed successfully!"
 echo ""
 echo "The decrypted attestation records contain cryptographic hashes that can be used to:"

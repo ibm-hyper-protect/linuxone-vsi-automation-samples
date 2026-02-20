@@ -97,6 +97,14 @@ The script demonstrates six usage examples:
   --format json
 ```
 
+### Extract using stdin (pipe):
+```bash
+cat ibm_cloud_images.json | ./contract-cli image \
+  --in - \
+  --version ibm-hyper-protect-container-runtime-1-0-s390x-16 \
+  --format json
+```
+
 ### Extract latest HPCR image:
 ```bash
 ./contract-cli image \

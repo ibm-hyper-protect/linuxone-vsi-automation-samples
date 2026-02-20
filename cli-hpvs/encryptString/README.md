@@ -128,6 +128,14 @@ The `encrypt-string` command supports the following flags:
   --cert encryption.crt
 ```
 
+### Using stdin (pipe):
+```bash
+echo "MyStdinPassword456" | ./contract-cli encrypt-string \
+  --in - \
+  --format text \
+  --cert encryption.crt
+```
+
 ## Troubleshooting
 
 ### Error: "Encryption certificate not found"

@@ -74,8 +74,18 @@ echo "=== Example 4: Extract and output to stdout ==="
 echo ""
 
 
-# Example 5: Extract different HPCR version
-echo "=== Example 5: Extract different HPCR version ==="
+# Example 5: Extract using stdin (pipe)
+echo "=== Example 5: Extract using stdin (pipe) ==="
+cat "$IMAGE_LIST_JSON" | "$CLI" image \
+  --in - \
+  --version "ibm-hyper-protect-container-runtime-1-0-s390x-16" \
+  --format json
+
+echo ""
+
+
+# Example 6: Extract different HPCR version
+echo "=== Example 6: Extract different HPCR version ==="
 echo "To extract a different version, specify the version name:"
 echo "  $CLI image --in $IMAGE_LIST_JSON --version ibm-hyper-protect-container-runtime-1-0-s390x-17 --format json"
 echo ""

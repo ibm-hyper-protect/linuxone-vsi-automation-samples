@@ -18,7 +18,16 @@ TEXT_OUTPUT_FILE="text_base64_output.txt"
 
 echo "Text Base64 Output:"
 cat "$TEXT_OUTPUT_FILE"
+echo ""
 
+
+# Example 2: Encode text using stdin (pipe)
+echo "=== Example 2: Encode text using stdin (pipe) ==="
+echo "Hello from stdin" | "$CLI" base64 \
+  --in - \
+  --format text
+
+echo ""
 
 
 # JSON input
